@@ -77,14 +77,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "axiom/lab — a research LMS for AI" },
+      {
+        name: "description",
+        content:
+          "Rigorous, code-forward courses on transformers, RLHF, diffusion models, and ML systems — taught by working AI researchers.",
+      },
+      { name: "author", content: "axiom/lab" },
+      { property: "og:title", content: "axiom/lab — a research LMS for AI" },
+      {
+        property: "og:description",
+        content:
+          "Rigorous, code-forward courses on transformers, RLHF, diffusion models, and ML systems.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
