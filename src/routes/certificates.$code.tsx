@@ -106,19 +106,22 @@ function CertificatePage() {
   return (
     <>
       <SiteHeader />
+      <main>
 
       <section className="mx-auto max-w-4xl px-6 py-12">
+        <h1 className="sr-only">Certificate of Completion — {courseTitle}</h1>
         <div className="mono-label mb-2">/ certificates / verify</div>
         <div className="mb-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm text-signal">
-            <CheckCircle2 className="h-4 w-4" />
+            <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
             <span className="font-mono text-xs uppercase tracking-wider">verified</span>
           </div>
           <button
             onClick={copy}
+            aria-label={copied ? "Link copied to clipboard" : "Copy certificate link"}
             className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-xs hover:bg-surface-2"
           >
-            <Share2 className="h-3.5 w-3.5" />
+            <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
             {copied ? "copied!" : "share link"}
           </button>
         </div>
@@ -130,6 +133,7 @@ function CertificatePage() {
 
           <div className="relative">
             <div className="mono-label text-signal">Certificate of Completion</div>
+
             <div className="mt-1 font-mono text-xs text-muted-foreground">
               axiom/lab · applied AI programme
             </div>
