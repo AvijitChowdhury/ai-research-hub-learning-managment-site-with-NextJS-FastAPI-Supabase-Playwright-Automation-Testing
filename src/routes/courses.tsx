@@ -6,17 +6,43 @@ import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 
 export const Route = createFileRoute("/courses")({
-  head: () => ({
-    meta: [
-      { title: "Catalog — axiom/lab" },
-      {
-        name: "description",
-        content: "Every course in the axiom/lab catalog: transformers, RLHF, diffusion, RL, ML systems, and research methods.",
-      },
-      { property: "og:title", content: "Catalog — axiom/lab" },
-      { property: "og:description", content: "Every course in the axiom/lab catalog." },
-    ],
-  }),
+  head: ({ loaderData }) => {
+    const url = "https://teach-research-ai-avi.lovable.app/courses";
+    const items = (loaderData ?? []) as Course[];
+    return {
+      meta: [
+        { title: "Catalog — axiom/lab" },
+        {
+          name: "description",
+          content:
+            "Every course in the axiom/lab catalog: transformers, RLHF, diffusion, RL, ML systems, and research methods.",
+        },
+        { property: "og:title", content: "Catalog — axiom/lab" },
+        { property: "og:description", content: "Every course in the axiom/lab catalog." },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "website" },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: "axiom/lab course catalog",
+            url,
+            hasPart: items.slice(0, 25).map((c) => ({
+              "@type": "Course",
+              name: c.title,
+              description: c.subtitle,
+              provider: { "@type": "Organization", name: "axiom/lab" },
+              url: `https://teach-research-ai-avi.lovable.app/courses/${c.slug}`,
+            })),
+          }),
+        },
+      ],
+    };
+  },
   loader: () => fetchCourses(),
   component: Catalog,
   errorComponent: ({ error }) => (
@@ -26,6 +52,7 @@ export const Route = createFileRoute("/courses")({
     </div>
   ),
 });
+
 
 function Catalog() {
   const courses = Route.useLoaderData() as Course[];
