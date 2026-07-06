@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
 import { CourseCard } from "@/components/course-card";
-import { fetchCourses } from "@/lib/courses";
+import { fetchCourses, type Course } from "@/lib/courses";
 import { ArrowRight, Cpu, FlaskConical, GitBranch, Sigma } from "lucide-react";
 
 export const Route = createFileRoute("/")({
