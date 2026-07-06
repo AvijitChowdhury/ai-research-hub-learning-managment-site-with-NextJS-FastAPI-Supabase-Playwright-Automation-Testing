@@ -337,7 +337,9 @@ function CourseDetail() {
                                 <button
                                   onClick={() => toggleMut.mutate({ lessonId: l.id, completed: !done })}
                                   className="text-signal transition-transform hover:scale-110"
+                                  aria-label={done ? `Mark "${l.title}" incomplete` : `Mark "${l.title}" complete`}
                                   title={done ? "Mark incomplete" : "Mark complete"}
+
                                 >
                                   {done ? <CheckCircle2 className="h-4 w-4" /> : <Circle className="h-4 w-4 text-muted-foreground" />}
                                 </button>
