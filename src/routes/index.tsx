@@ -104,9 +104,11 @@ function Home() {
           ].map(([Icon, title, body]) => {
             const IconComp = Icon as typeof Sigma;
             return (
-              <div key={title as string} className="bg-background p-8">
-                <IconComp className="h-5 w-5 text-signal" />
-                <h3 className="mt-4 text-sm font-medium">{title as string}</h3>
+              <div key={title as string} className="group relative bg-background p-8 transition-colors hover:bg-surface/50">
+                <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-md border border-signal/30 bg-signal/10 text-signal transition-all group-hover:border-signal/60 group-hover:shadow-[0_0_20px_-4px_var(--signal-glow)]">
+                  <IconComp className="h-4 w-4" />
+                </div>
+                <h3 className="text-sm font-medium">{title as string}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{body as string}</p>
               </div>
             );
