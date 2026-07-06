@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /learn/
+Disallow: /checkout/
+Disallow: /auth
+Disallow: /api/
+
+Sitemap: https://teach-research-ai-avi.lovable.app/sitemap.xml
