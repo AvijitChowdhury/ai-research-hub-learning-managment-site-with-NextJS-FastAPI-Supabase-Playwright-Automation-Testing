@@ -5,6 +5,28 @@ import { fetchCourses, type Course } from "@/lib/courses";
 import { ArrowRight, Cpu, FlaskConical, GitBranch, Sigma } from "lucide-react";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { property: "og:url", content: "https://teach-research-ai-avi.lovable.app/" },
+    ],
+    links: [{ rel: "canonical", href: "https://teach-research-ai-avi.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "axiom/lab",
+          url: "https://teach-research-ai-avi.lovable.app/",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://teach-research-ai-avi.lovable.app/courses?q={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        }),
+      },
+    ],
+  }),
   loader: () => fetchCourses(),
   component: Home,
   errorComponent: ({ error }) => (
@@ -14,6 +36,7 @@ export const Route = createFileRoute("/")({
     </div>
   ),
 });
+
 
 function Home() {
   const courses = Route.useLoaderData() as Course[];
