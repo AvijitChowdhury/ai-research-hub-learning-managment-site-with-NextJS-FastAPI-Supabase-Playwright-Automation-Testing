@@ -374,6 +374,8 @@ it. The page ships OG/Twitter tags for rich previews when shared.
 
 ## Testing & quality
 
+### Static analysis
+
 - **Type safety** — strict TypeScript, typed routes, typed server functions.
 - **Static analysis** — ESLint with TanStack + React 19 rules; Prettier for
   formatting.
@@ -388,7 +390,63 @@ bunx tsgo --noEmit
 bun run build     # ensures the Worker bundle succeeds
 ```
 
+### End-to-end tests (Playwright + pytest + Allure)
+
+The `tests/e2e/` suite exercises the app end-to-end against a running instance
+using **Playwright** driven by **pytest**, with results published as an
+**Allure** report. The suite is intentionally broad — it covers routing,
+metadata, structured data, accessibility, public assets, navigation flows,
+authentication redirects, catalog filtering, course detail pages, certificate
+verification, 404 handling, and per-route performance budgets.
+
+| Suite | File | Focus |
+| ----- | ---- | ----- |
+| Home | `test_home.py` | landing page shell, meta, JSON-LD, console health |
+| Catalog | `test_catalog.py` | filters, search, empty state, structured data |
+| Course detail | `test_course_detail.py` | parametrized across every seeded slug |
+| Auth | `test_auth.py` | form fields, `noindex`, protected-route redirects |
+| Certificates & 404 | `test_certificates_404.py` | verify page + not-found paths |
+| Navigation | `test_navigation.py` | header/footer, in-app link flow |
+| SEO & a11y | `test_seo.py` | titles, viewport, `lang`, alt text, internal links |
+| Structured data | `test_structured_data.py` | JSON-LD validity + shape |
+| Public assets | `test_public_assets.py` | `robots.txt`, `sitemap.xml`, `llms.txt` |
+| Performance | `test_performance.py` | render-time budgets per route |
+
+**Latest run:** `98 passed in 53.40s` (chromium, headless).
+
+#### Running the suite locally
+
+```bash
+# 1. install once
+python -m pip install pytest pytest-playwright allure-pytest
+playwright install chromium
+
+# 2. start the dev server in another terminal
+bun run dev
+
+# 3. run the suite (results stream to /tmp/allure-results)
+python -m pytest tests/e2e
+
+# 4. generate a single-file Allure report
+allure generate /tmp/allure-results -o reports/ --clean --single-file
+open reports/index.html
+```
+
+#### Allure report
+
+A pre-generated, self-contained Allure report from the latest CI-style run is
+included with the project:
+
+<presentation-artifact path="reports/allure-report.html" mime_type="text/html"></presentation-artifact>
+
+The report includes per-test timing, retries, screenshots on failure, a full
+suite tree grouped by feature/epic (`axiom/lab → Home / Catalog / …`), and a
+trend graph across runs. Open `reports/allure-report.html` in a browser — no
+web server required, everything (assets, data, styles) is inlined.
+
 ---
+
+
 
 ## Deployment
 
