@@ -186,11 +186,24 @@ function CourseDetail() {
                     <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-surface-2">
                       <div className="h-full bg-signal transition-all" style={{ width: `${progressPct}%` }} />
                     </div>
+                    {(() => {
+                      const flat = modules.flatMap((m) => m.lessons);
+                      const nextLesson = flat.find((l) => !completedIds.has(l.id)) ?? flat[0];
+                      return nextLesson ? (
+                        <Link
+                          to="/learn/$slug/$lessonId"
+                          params={{ slug: course.slug, lessonId: nextLesson.id }}
+                          className="mt-5 flex w-full items-center justify-center rounded-md bg-signal py-3 font-mono text-sm text-signal-foreground transition-opacity hover:opacity-90"
+                        >
+                          {completedIds.size === 0 ? "Start learning →" : "Continue learning →"}
+                        </Link>
+                      ) : null;
+                    })()}
                     <Link
                       to="/dashboard"
-                      className="mt-5 flex w-full items-center justify-center rounded-md border border-border-strong bg-background py-3 font-mono text-sm transition-colors hover:bg-surface-2"
+                      className="mt-2 flex w-full items-center justify-center rounded-md border border-border-strong bg-background py-2 font-mono text-xs transition-colors hover:bg-surface-2"
                     >
-                      Go to dashboard →
+                      Dashboard
                     </Link>
                   </>
                 ) : (
