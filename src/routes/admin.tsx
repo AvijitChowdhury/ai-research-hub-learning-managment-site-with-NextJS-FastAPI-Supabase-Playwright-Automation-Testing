@@ -23,9 +23,8 @@ const ORDERS = [
   { id: "ord_8wxa", user: "priya@iisc.ac.in", course: "Reinforcement Learning: Fundamentals", amount: 129, status: "PAID", when: "1d ago" },
 ];
 
-export default function _admin() {
-  return null;
-}
+
+
 
 function Admin() {
   const stats = [
