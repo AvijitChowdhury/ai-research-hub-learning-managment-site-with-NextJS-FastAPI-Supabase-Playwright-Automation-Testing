@@ -5,6 +5,28 @@ import { fetchCourses, type Course } from "@/lib/courses";
 import { ArrowRight, Cpu, FlaskConical, GitBranch, Sigma } from "lucide-react";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { property: "og:url", content: "https://teach-research-ai-avi.lovable.app/" },
+    ],
+    links: [{ rel: "canonical", href: "https://teach-research-ai-avi.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "axiom/lab",
+          url: "https://teach-research-ai-avi.lovable.app/",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://teach-research-ai-avi.lovable.app/courses?q={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        }),
+      },
+    ],
+  }),
   loader: () => fetchCourses(),
   component: Home,
   errorComponent: ({ error }) => (
@@ -15,6 +37,7 @@ export const Route = createFileRoute("/")({
   ),
 });
 
+
 function Home() {
   const courses = Route.useLoaderData() as Course[];
   const featured = courses.slice(0, 3);
@@ -22,9 +45,11 @@ function Home() {
   return (
     <>
       <SiteHeader />
+      <main>
 
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-border">
+
         <div className="grid-lines-fine pointer-events-none absolute inset-0" />
         <div className="pointer-events-none absolute -top-40 left-1/4 h-96 w-96 rounded-full bg-signal/10 blur-3xl" />
         <div className="pointer-events-none absolute -top-20 right-0 h-96 w-96 rounded-full bg-plum/10 blur-3xl" />
@@ -116,7 +141,7 @@ function Home() {
                 <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-md border border-signal/30 bg-signal/10 text-signal transition-all group-hover:border-signal/60 group-hover:shadow-[0_0_20px_-4px_var(--signal-glow)]">
                   <IconComp className="h-4 w-4" />
                 </div>
-                <h3 className="text-sm font-medium">{title as string}</h3>
+                <h2 className="text-sm font-medium">{title as string}</h2>
                 <p className="mt-2 text-sm text-muted-foreground">{body as string}</p>
               </div>
             );
@@ -179,8 +204,9 @@ function Home() {
           </div>
         </div>
       </section>
-
+      </main>
       <SiteFooter />
     </>
   );
+
 }

@@ -174,17 +174,19 @@ function AuthPage() {
           <button
             type="submit"
             disabled={busy}
+            aria-label={busy ? (mode === "signin" ? "Signing in" : "Creating account") : undefined}
             className="mt-2 inline-flex items-center justify-center gap-2 rounded-md bg-signal px-4 py-3 font-mono text-sm font-medium text-signal-foreground shadow-[0_0_40px_-8px_var(--signal-glow)] transition-all hover:brightness-110 disabled:opacity-60"
           >
             {busy ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
             ) : (
               <>
                 {mode === "signin" ? "Sign in" : "Create account"}
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </>
             )}
           </button>
+
         </form>
 
         <div className="mt-6 text-center text-sm text-muted-foreground">

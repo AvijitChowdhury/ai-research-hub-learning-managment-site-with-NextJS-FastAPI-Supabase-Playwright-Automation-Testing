@@ -34,14 +34,53 @@ export const Route = createFileRoute("/courses/$slug")({
       return { meta: [{ title: "Course not found — axiom/lab" }, { name: "robots", content: "noindex" }] };
     }
     const c = loaderData.course;
+    const url = `https://teach-research-ai-avi.lovable.app/courses/${c.slug}`;
     return {
       meta: [
         { title: `${c.title} — axiom/lab` },
         { name: "description", content: c.subtitle },
         { property: "og:title", content: `${c.title} — axiom/lab` },
         { property: "og:description", content: c.subtitle },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "website" },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Course",
+            name: c.title,
+            description: c.description || c.subtitle,
+            url,
+            provider: {
+              "@type": "Organization",
+              name: "axiom/lab",
+              url: "https://teach-research-ai-avi.lovable.app",
+            },
+            ...(c.instructor?.name && {
+              instructor: { "@type": "Person", name: c.instructor.name },
+            }),
+            offers: {
+              "@type": "Offer",
+              price: c.price,
+              priceCurrency: c.currency || "USD",
+              availability: "https://schema.org/InStock",
+              url,
+            },
+            ...(c.rating > 0 && c.reviewsCount > 0 && {
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: c.rating,
+                reviewCount: c.reviewsCount,
+              },
+            }),
+          }),
+        },
       ],
     };
+
   },
   notFoundComponent: () => (
     <>
@@ -138,9 +177,11 @@ function CourseDetail() {
   return (
     <>
       <SiteHeader />
+      <main>
 
       {/* HERO */}
       <section className="border-b border-border">
+
         <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-12">
           <div className="md:col-span-8">
             <div className="mono-label mb-4 flex items-center gap-3">
@@ -296,7 +337,9 @@ function CourseDetail() {
                                 <button
                                   onClick={() => toggleMut.mutate({ lessonId: l.id, completed: !done })}
                                   className="text-signal transition-transform hover:scale-110"
+                                  aria-label={done ? `Mark "${l.title}" incomplete` : `Mark "${l.title}" complete`}
                                   title={done ? "Mark incomplete" : "Mark complete"}
+
                                 >
                                   {done ? <CheckCircle2 className="h-4 w-4" /> : <Circle className="h-4 w-4 text-muted-foreground" />}
                                 </button>
@@ -383,8 +426,10 @@ function CourseDetail() {
         </section>
       )}
 
+      </main>
       <SiteFooter />
     </>
+
   );
 }
 

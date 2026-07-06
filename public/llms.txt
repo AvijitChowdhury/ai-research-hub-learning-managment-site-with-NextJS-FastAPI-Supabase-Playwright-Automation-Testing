@@ -1,0 +1,15 @@
+# axiom/lab
+
+> A research-grade learning platform for people doing AI. Rigorous, code-forward courses on transformers, RLHF, diffusion models, reinforcement learning, and ML systems — taught by working AI researchers.
+
+axiom/lab publishes structured courses that ground each technique in the paper it came from and the code needed to reproduce it. Each course ships with modules, lessons, verifiable certificates of completion, and student reviews.
+
+## Pages
+
+- [Home](/): Overview of the platform, featured cohort, and pillars.
+- [Course catalog](/courses): Full catalog with search and filters by category and level.
+- [Sign in](/auth): Sign in or create an account to enroll and track progress.
+
+## Optional
+
+- [Sitemap](/sitemap.xml): Machine-readable list of all public pages.
