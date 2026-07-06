@@ -143,7 +143,9 @@ function Catalog() {
         )}
       </section>
 
+      </main>
       <SiteFooter />
+
     </>
   );
 }
