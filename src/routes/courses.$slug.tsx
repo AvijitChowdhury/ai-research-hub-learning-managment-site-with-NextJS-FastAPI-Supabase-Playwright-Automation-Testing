@@ -95,8 +95,17 @@ function CourseDetail() {
   });
 
   const enrollMut = useMutation({
-    mutationFn: () => enrollInCourse(course.id),
-    onSuccess: () => {
+    mutationFn: async () => {
+      const res = await createUddoktapayCheckout({ data: { courseId: course.id } });
+      return res;
+    },
+    onSuccess: (res) => {
+      if (res.payment_url) {
+        toast.message("Redirecting to secure checkout…");
+        window.location.href = res.payment_url;
+        return;
+      }
+      // free course or already enrolled
       toast.success("You're enrolled. Start learning below.");
       qc.invalidateQueries({ queryKey: ["enrolled", course.id] });
       qc.invalidateQueries({ queryKey: ["my-enrollments"] });
