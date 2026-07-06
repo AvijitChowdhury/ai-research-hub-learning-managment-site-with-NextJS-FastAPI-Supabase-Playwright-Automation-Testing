@@ -118,7 +118,7 @@ function CourseDetail() {
 
   function handleEnroll() {
     if (!user) {
-      navigate({ to: "/auth", search: { redirect: `/courses/${course.slug}` } });
+      navigate({ to: "/auth" });
       return;
     }
     enrollMut.mutate();
