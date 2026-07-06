@@ -16,7 +16,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const courses = Route.useLoaderData();
+  const courses = Route.useLoaderData() as Course[];
   const featured = courses.slice(0, 3);
 
   return (
