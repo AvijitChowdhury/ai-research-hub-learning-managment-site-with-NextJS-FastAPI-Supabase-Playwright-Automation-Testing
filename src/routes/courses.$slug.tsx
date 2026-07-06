@@ -177,9 +177,11 @@ function CourseDetail() {
   return (
     <>
       <SiteHeader />
+      <main>
 
       {/* HERO */}
       <section className="border-b border-border">
+
         <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-12">
           <div className="md:col-span-8">
             <div className="mono-label mb-4 flex items-center gap-3">
