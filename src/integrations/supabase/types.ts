@@ -211,6 +211,13 @@ export type Database = {
             referencedRelation: "lessons"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "lesson_progress_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       lessons: {
@@ -433,7 +440,47 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      lessons_public: {
+        Row: {
+          created_at: string | null
+          duration_secs: number | null
+          free_preview: boolean | null
+          id: string | null
+          module_id: string | null
+          sort_order: number | null
+          title: string | null
+          type: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          duration_secs?: number | null
+          free_preview?: boolean | null
+          id?: string | null
+          module_id?: string | null
+          sort_order?: number | null
+          title?: string | null
+          type?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          duration_secs?: number | null
+          free_preview?: boolean | null
+          id?: string | null
+          module_id?: string | null
+          sort_order?: number | null
+          title?: string | null
+          type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lessons_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       claim_first_admin: { Args: never; Returns: boolean }
@@ -447,6 +494,18 @@ export type Database = {
       refresh_course_rating: {
         Args: { _course_id: string }
         Returns: undefined
+      }
+      verify_certificate: {
+        Args: { _code: string }
+        Returns: {
+          code: string
+          course_slug: string
+          course_title: string
+          id: string
+          instructor_name: string
+          issued_at: string
+          student_name: string
+        }[]
       }
     }
     Enums: {
