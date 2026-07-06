@@ -1,0 +1,26 @@
+
+-- Bootstrap: allow the first signed-in user to claim admin if no admins exist yet.
+CREATE OR REPLACE FUNCTION public.claim_first_admin()
+RETURNS boolean
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  uid uuid := auth.uid();
+BEGIN
+  IF uid IS NULL THEN
+    RAISE EXCEPTION 'Not authenticated';
+  END IF;
+  IF EXISTS (SELECT 1 FROM public.user_roles WHERE role = 'admin') THEN
+    RETURN false;
+  END IF;
+  INSERT INTO public.user_roles (user_id, role)
+  VALUES (uid, 'admin')
+  ON CONFLICT DO NOTHING;
+  RETURN true;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.claim_first_admin() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.claim_first_admin() TO authenticated;
