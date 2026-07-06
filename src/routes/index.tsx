@@ -45,9 +45,11 @@ function Home() {
   return (
     <>
       <SiteHeader />
+      <main>
 
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-border">
+
         <div className="grid-lines-fine pointer-events-none absolute inset-0" />
         <div className="pointer-events-none absolute -top-40 left-1/4 h-96 w-96 rounded-full bg-signal/10 blur-3xl" />
         <div className="pointer-events-none absolute -top-20 right-0 h-96 w-96 rounded-full bg-plum/10 blur-3xl" />
