@@ -434,15 +434,37 @@ open reports/index.html
 
 #### Allure report
 
-A pre-generated, self-contained Allure report from the latest CI-style run is
-included with the project:
+The latest run produced **98 passing tests in ~54s** on Chromium, grouped by
+feature/epic (`axiom/lab → Home / Catalog / Course Detail / Auth / SEO / …`).
+Screenshots of the generated Allure report are checked in under
+[`docs/allure/`](./docs/allure) so the results are visible directly from
+GitHub without hosting the HTML bundle.
 
-<presentation-artifact path="reports/allure-report.html" mime_type="text/html"></presentation-artifact>
+**Overview — 98/98 passing**
 
-The report includes per-test timing, retries, screenshots on failure, a full
-suite tree grouped by feature/epic (`axiom/lab → Home / Catalog / …`), and a
-trend graph across runs. Open `reports/allure-report.html` in a browser — no
-web server required, everything (assets, data, styles) is inlined.
+![Allure overview — 98 tests, 100% pass rate](./docs/allure/overview.png)
+
+**Suites — per-module breakdown**
+
+![Allure suites — per-module test counts](./docs/allure/suites.png)
+
+**Graphs — status, severity, duration distribution**
+
+![Allure graphs — status, severity, duration](./docs/allure/graphs.png)
+
+**Timeline — parallel worker execution**
+
+![Allure timeline — parallel worker execution](./docs/allure/timeline.png)
+
+**Behaviors — epic / feature / story tree**
+
+![Allure behaviors — epic and feature tree](./docs/allure/behaviors.png)
+
+To regenerate the full interactive report locally, run the commands above and
+open `reports/index.html` (or `reports/allure-report.html` when using
+`--single-file`). Everything (assets, data, styles) is inlined so no web server
+is required.
+
 
 ---
 
