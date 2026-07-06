@@ -108,7 +108,9 @@ function CheckoutReturn() {
           </>
         )}
       </section>
+      </main>
       <SiteFooter />
+
     </>
   );
 }
