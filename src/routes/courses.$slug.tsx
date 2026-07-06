@@ -4,7 +4,7 @@ import {
   fetchCourseBySlug,
   fetchCourses,
   formatDuration,
-  enrollInCourse,
+  
   isEnrolled,
   fetchMyProgressForCourse,
   toggleLessonComplete,
