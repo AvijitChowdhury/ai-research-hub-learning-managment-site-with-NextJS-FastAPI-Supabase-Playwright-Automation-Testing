@@ -14,7 +14,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-8 px-6">
         <Link to="/" className="flex items-center gap-2 font-mono text-sm font-medium">
-          <span className="inline-flex h-6 w-6 items-center justify-center rounded-sm bg-signal text-signal-foreground font-bold">
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-sm bg-signal text-signal-foreground font-bold shadow-[0_0_16px_-2px_var(--signal-glow)]">
             ∴
           </span>
           <span>axiom<span className="text-muted-foreground">/lab</span></span>
@@ -51,7 +51,7 @@ export function SiteHeader() {
           </Link>
           <Link
             to="/courses"
-            className="rounded-md bg-signal px-3 py-1.5 text-xs font-mono font-medium text-signal-foreground transition-opacity hover:opacity-90"
+            className="rounded-md bg-signal px-3 py-1.5 text-xs font-mono font-medium text-signal-foreground shadow-[0_0_20px_-4px_var(--signal-glow)] transition-all hover:brightness-110"
           >
             Enroll →
           </Link>

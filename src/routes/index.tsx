@@ -17,11 +17,16 @@ function Home() {
 
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-border">
-        <div className="grid-lines pointer-events-none absolute inset-0 opacity-[0.08]" />
+        <div className="grid-lines-fine pointer-events-none absolute inset-0" />
+        <div className="pointer-events-none absolute -top-40 left-1/4 h-96 w-96 rounded-full bg-signal/10 blur-3xl" />
+        <div className="pointer-events-none absolute -top-20 right-0 h-96 w-96 rounded-full bg-plum/10 blur-3xl" />
         <div className="relative mx-auto grid max-w-7xl gap-16 px-6 py-24 md:grid-cols-12 md:py-32">
           <div className="md:col-span-8">
             <div className="mono-label mb-6 flex items-center gap-3">
-              <span className="h-1.5 w-1.5 rounded-full bg-signal" />
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-signal opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-signal" />
+              </span>
               cohort · 026 · now enrolling
             </div>
             <h1 className="text-5xl leading-[1.05] tracking-tight md:text-7xl">
@@ -29,8 +34,8 @@ function Home() {
               <span className="font-serif italic text-muted-foreground">for people doing</span>{" "}
               research in{" "}
               <span className="relative inline-block">
-                <span className="relative z-10">artificial intelligence</span>
-                <span className="absolute -bottom-1 left-0 right-0 h-3 bg-signal/40" />
+                <span className="relative z-10 text-gradient-signal">artificial intelligence</span>
+                <span className="absolute -bottom-1 left-0 right-0 h-3 bg-signal/30 blur-sm" />
               </span>
               .
             </h1>
@@ -41,7 +46,7 @@ function Home() {
             <div className="mt-10 flex flex-wrap items-center gap-3">
               <Link
                 to="/courses"
-                className="group inline-flex items-center gap-2 rounded-md bg-signal px-5 py-3 font-mono text-sm font-medium text-signal-foreground transition-opacity hover:opacity-90"
+                className="group inline-flex items-center gap-2 rounded-md bg-signal px-5 py-3 font-mono text-sm font-medium text-signal-foreground shadow-[0_0_40px_-8px_var(--signal-glow)] transition-all hover:shadow-[0_0_60px_-4px_var(--signal-glow)] hover:brightness-110"
               >
                 Browse the catalog
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -49,7 +54,7 @@ function Home() {
               <Link
                 to="/courses/$slug"
                 params={{ slug: "reading-ai-papers" }}
-                className="inline-flex items-center gap-2 rounded-md border border-border-strong bg-surface px-5 py-3 font-mono text-sm transition-colors hover:bg-surface-2"
+                className="inline-flex items-center gap-2 rounded-md border border-border-strong bg-surface/60 px-5 py-3 font-mono text-sm backdrop-blur transition-colors hover:border-signal/40 hover:bg-surface-2"
               >
                 Watch a free lesson →
               </Link>
@@ -57,8 +62,11 @@ function Home() {
           </div>
 
           <aside className="md:col-span-4">
-            <div className="rounded-lg border border-border bg-surface p-5 font-mono text-xs">
-              <div className="mono-label mb-4">what's inside</div>
+            <div className="rounded-lg border border-border bg-surface/70 p-5 font-mono text-xs backdrop-blur">
+              <div className="mono-label mb-4 flex items-center justify-between">
+                <span>what's inside</span>
+                <span className="text-signal">●</span>
+              </div>
               <ul className="space-y-3">
                 {[
                   ["48", "lessons in Transformers From Scratch"],
@@ -67,17 +75,17 @@ function Home() {
                   ["4.8", "avg rating across every course"],
                 ].map(([n, l]) => (
                   <li key={l} className="flex items-baseline gap-3 border-b border-border pb-3 last:border-b-0 last:pb-0">
-                    <span className="text-lg text-signal">{n}</span>
+                    <span className="text-lg text-signal font-medium">{n}</span>
                     <span className="text-muted-foreground">{l}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="mt-4 rounded-lg border border-border bg-surface-2 p-5">
-              <div className="mono-label mb-2">latest</div>
+            <div className="mt-4 rounded-lg border border-ember/20 bg-gradient-to-br from-surface-2 to-surface p-5">
+              <div className="mono-label mb-2 text-ember">latest ↗</div>
               <p className="text-sm">
-                <span className="text-signal">New:</span> "How To Read AI Papers" · a 6-hour
+                <span className="text-ember">New:</span> "How To Read AI Papers" · a 6-hour
                 short course from Elena Marchetti.
               </p>
             </div>
@@ -96,9 +104,11 @@ function Home() {
           ].map(([Icon, title, body]) => {
             const IconComp = Icon as typeof Sigma;
             return (
-              <div key={title as string} className="bg-background p-8">
-                <IconComp className="h-5 w-5 text-signal" />
-                <h3 className="mt-4 text-sm font-medium">{title as string}</h3>
+              <div key={title as string} className="group relative bg-background p-8 transition-colors hover:bg-surface/50">
+                <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-md border border-signal/30 bg-signal/10 text-signal transition-all group-hover:border-signal/60 group-hover:shadow-[0_0_20px_-4px_var(--signal-glow)]">
+                  <IconComp className="h-4 w-4" />
+                </div>
+                <h3 className="text-sm font-medium">{title as string}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{body as string}</p>
               </div>
             );
@@ -139,11 +149,13 @@ function Home() {
 
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-6 py-24">
-        <div className="relative overflow-hidden rounded-xl border border-border bg-surface p-12 md:p-16">
-          <div className="grid-lines absolute inset-0 opacity-[0.08]" />
+        <div className="relative overflow-hidden rounded-xl border border-signal/20 bg-gradient-to-br from-surface via-surface to-surface-2 p-12 md:p-16">
+          <div className="grid-lines-fine absolute inset-0" />
+          <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-signal/20 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-plum/15 blur-3xl" />
           <div className="relative flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
             <div className="max-w-xl">
-              <div className="mono-label mb-3">$ start</div>
+              <div className="mono-label mb-3 text-signal">$ start</div>
               <h2 className="text-3xl md:text-4xl">Enroll in cohort 026.</h2>
               <p className="mt-3 text-muted-foreground">
                 One-time payment. Lifetime access. New cohorts every two months with live office
@@ -152,7 +164,7 @@ function Home() {
             </div>
             <Link
               to="/courses"
-              className="inline-flex items-center gap-2 rounded-md bg-signal px-6 py-3 font-mono text-sm font-medium text-signal-foreground"
+              className="inline-flex items-center gap-2 rounded-md bg-signal px-6 py-3 font-mono text-sm font-medium text-signal-foreground shadow-[0_0_40px_-8px_var(--signal-glow)] transition-all hover:brightness-110"
             >
               See all courses <ArrowRight className="h-4 w-4" />
             </Link>

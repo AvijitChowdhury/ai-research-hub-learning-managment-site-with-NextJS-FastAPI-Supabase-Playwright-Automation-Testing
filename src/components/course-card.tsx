@@ -7,24 +7,25 @@ export function CourseCard({ course }: { course: Course }) {
     <Link
       to="/courses/$slug"
       params={{ slug: course.slug }}
-      className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-colors hover:border-border-strong"
+      className="card-hover group relative flex flex-col overflow-hidden rounded-lg border border-border bg-surface"
     >
       <div
         className={`relative h-40 overflow-hidden bg-gradient-to-br ${course.thumbnailGradient} border-b border-border`}
       >
         <div className="grid-lines absolute inset-0 opacity-30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
         <div className="absolute inset-0 flex items-end justify-between p-4">
-          <span className="mono-label rounded-sm border border-border-strong bg-background/70 px-2 py-1 backdrop-blur">
+          <span className="mono-label rounded-sm border border-border-strong bg-background/70 px-2 py-1 text-foreground/80 backdrop-blur">
             {course.tag}
           </span>
-          <span className="mono-label rounded-sm border border-border-strong bg-background/70 px-2 py-1 backdrop-blur">
+          <span className="mono-label rounded-sm border border-signal/40 bg-signal/10 px-2 py-1 text-signal backdrop-blur">
             {course.level}
           </span>
         </div>
       </div>
       <div className="flex flex-1 flex-col p-5">
         <div className="mono-label mb-2">{course.category}</div>
-        <h3 className="text-lg font-medium leading-snug text-foreground group-hover:text-signal">
+        <h3 className="text-lg font-medium leading-snug text-foreground transition-colors group-hover:text-signal">
           {course.title}
         </h3>
         <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{course.subtitle}</p>
@@ -46,7 +47,7 @@ export function CourseCard({ course }: { course: Course }) {
           </div>
           <div className="text-right">
             <div className="mono-label">Price</div>
-            <div className="mt-1 font-mono text-base text-foreground">${course.price}</div>
+            <div className="mt-1 font-mono text-base text-ember">${course.price}</div>
           </div>
         </div>
       </div>
