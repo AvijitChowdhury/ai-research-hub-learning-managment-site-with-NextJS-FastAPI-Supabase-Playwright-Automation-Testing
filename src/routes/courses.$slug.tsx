@@ -228,10 +228,16 @@ function CourseDetail() {
                       disabled={enrollMut.isPending}
                       className="mt-5 w-full rounded-md bg-signal py-3 font-mono text-sm font-medium text-signal-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
                     >
-                      {enrollMut.isPending ? "Enrolling…" : user ? "Enroll — free preview access" : "Sign in to enroll"}
+                      {enrollMut.isPending
+                        ? "Redirecting…"
+                        : !user
+                          ? "Sign in to enroll"
+                          : course.price > 0
+                            ? `Pay $${course.price} — enroll`
+                            : "Enroll — free"}
                     </button>
                     <p className="mt-2 text-center text-[10px] font-mono text-muted-foreground">
-                      payments via UdokktaPay coming soon
+                      {course.price > 0 ? "secure checkout via UdokktaPay" : "no payment required"}
                     </p>
                   </>
                 )}
