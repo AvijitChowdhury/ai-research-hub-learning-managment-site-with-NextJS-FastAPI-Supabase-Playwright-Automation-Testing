@@ -6,10 +6,11 @@ import {
   fetchAllMyProgress,
   type Course,
 } from "@/lib/courses";
+import { fetchMyCertificates } from "@/lib/certificates";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { useProfile } from "@/hooks/use-auth";
-import { ArrowRight, Clock, Trophy } from "lucide-react";
+import { ArrowRight, Award, Clock, Trophy } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -37,6 +38,12 @@ function Dashboard() {
     queryFn: fetchAllMyProgress,
     enabled: !!user,
   });
+  const certsQ = useQuery({
+    queryKey: ["my-certificates", user?.id],
+    queryFn: fetchMyCertificates,
+    enabled: !!user,
+  });
+  const certByCourse = new Map((certsQ.data ?? []).map((c) => [c.course_id, c.code]));
 
   const courses = coursesQ.data ?? [];
   const enrollments = enrollmentsQ.data ?? [];
@@ -144,18 +151,33 @@ function Dashboard() {
             <section className="mx-auto max-w-7xl px-6 py-12">
               <div className="mono-label mb-4">completed</div>
               <div className="grid gap-3 md:grid-cols-2">
-                {completed.map(({ course }) => (
-                  <div key={course.id} className="flex items-center gap-4 rounded-lg border border-border bg-surface p-4">
-                    <Trophy className="h-5 w-5 text-signal" />
-                    <div className="flex-1">
-                      <div className="text-sm">{course.title}</div>
-                      <div className="mono-label mt-0.5">completed · certificate issued</div>
+                {completed.map(({ course }) => {
+                  const code = certByCourse.get(course.id);
+                  return (
+                    <div key={course.id} className="flex items-center gap-4 rounded-lg border border-border bg-surface p-4">
+                      <Trophy className="h-5 w-5 text-signal" />
+                      <div className="flex-1">
+                        <div className="text-sm">{course.title}</div>
+                        <div className="mono-label mt-0.5">
+                          {code ? "completed · certificate issued" : "completed"}
+                        </div>
+                      </div>
+                      {code ? (
+                        <Link
+                          to="/certificates/$code"
+                          params={{ code }}
+                          className="inline-flex items-center gap-1.5 rounded-md border border-signal/30 bg-signal/10 px-2.5 py-1 font-mono text-xs text-signal hover:bg-signal/20"
+                        >
+                          <Award className="h-3.5 w-3.5" /> certificate
+                        </Link>
+                      ) : (
+                        <Link to="/courses/$slug" params={{ slug: course.slug }} className="mono-label hover:text-foreground">
+                          view →
+                        </Link>
+                      )}
                     </div>
-                    <Link to="/courses/$slug" params={{ slug: course.slug }} className="mono-label hover:text-foreground">
-                      view →
-                    </Link>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </section>
           )}
