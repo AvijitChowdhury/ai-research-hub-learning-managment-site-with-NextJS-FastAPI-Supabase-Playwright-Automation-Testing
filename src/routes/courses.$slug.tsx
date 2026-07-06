@@ -1,14 +1,31 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
-import { courseBySlug, formatDuration, COURSES, type Course, type Module, type Lesson } from "@/lib/mock-data";
+import {
+  fetchCourseBySlug,
+  fetchCourses,
+  formatDuration,
+  enrollInCourse,
+  isEnrolled,
+  fetchMyProgressForCourse,
+  toggleLessonComplete,
+  type Course,
+  type Module,
+  type Lesson,
+} from "@/lib/courses";
 import { CourseCard } from "@/components/course-card";
-import { CheckCircle2, Lock, PlayCircle, Star } from "lucide-react";
+import { CheckCircle2, Circle, Lock, PlayCircle, Star } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/courses/$slug")({
-  loader: ({ params }) => {
-    const course = courseBySlug(params.slug);
+  loader: async ({ params }) => {
+    const [course, all] = await Promise.all([
+      fetchCourseBySlug(params.slug),
+      fetchCourses(),
+    ]);
     if (!course) throw notFound();
-    return { course };
+    return { course, all };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -40,17 +57,72 @@ export const Route = createFileRoute("/courses/$slug")({
       <SiteFooter />
     </>
   ),
+  errorComponent: ({ error }) => (
+    <div className="mx-auto max-w-3xl px-6 py-32 text-center text-muted-foreground">
+      <div className="mono-label">error</div>
+      <p className="mt-3">{(error as Error).message}</p>
+    </div>
+  ),
   component: CourseDetail,
 });
 
 function CourseDetail() {
-  const { course } = Route.useLoaderData() as { course: Course };
-  const related = COURSES.filter((c) => c.slug !== course.slug && c.category === course.category).slice(0, 3);
-  const totalLessons = course.modules.reduce((n: number, m: Module) => n + m.lessons.length, 0);
-  const totalSecs = course.modules.reduce(
+  const { course, all } = Route.useLoaderData() as { course: Course; all: Course[] };
+  const modules = course.modules ?? [];
+  const related = all.filter((c) => c.slug !== course.slug && c.category === course.category).slice(0, 3);
+  const totalLessons = modules.reduce((n: number, m: Module) => n + m.lessons.length, 0);
+  const totalSecs = modules.reduce(
     (n: number, m: Module) => n + m.lessons.reduce((s: number, l: Lesson) => s + l.durationSecs, 0),
     0,
   );
+
+  const { user } = useAuth();
+  const qc = useQueryClient();
+  const navigate = useNavigate();
+
+  const enrolledQuery = useQuery({
+    queryKey: ["enrolled", course.id, user?.id],
+    queryFn: () => isEnrolled(course.id),
+    enabled: !!user,
+  });
+
+  const progressQuery = useQuery({
+    queryKey: ["progress", course.id, user?.id],
+    queryFn: () => fetchMyProgressForCourse(course.id),
+    enabled: !!user && !!enrolledQuery.data,
+  });
+
+  const enrollMut = useMutation({
+    mutationFn: () => enrollInCourse(course.id),
+    onSuccess: () => {
+      toast.success("You're enrolled. Start learning below.");
+      qc.invalidateQueries({ queryKey: ["enrolled", course.id] });
+      qc.invalidateQueries({ queryKey: ["my-enrollments"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const toggleMut = useMutation({
+    mutationFn: ({ lessonId, completed }: { lessonId: string; completed: boolean }) =>
+      toggleLessonComplete(course.id, lessonId, completed),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["progress", course.id] });
+      qc.invalidateQueries({ queryKey: ["all-progress"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const enrolled = !!enrolledQuery.data;
+  const completedIds = progressQuery.data ?? new Set<string>();
+  const progressPct = enrolled && totalLessons > 0 ? Math.round((completedIds.size / totalLessons) * 100) : 0;
+
+  function handleEnroll() {
+    if (!user) {
+      navigate({ to: "/auth", search: { redirect: `/courses/${course.slug}` } });
+      return;
+    }
+    enrollMut.mutate();
+  }
 
   return (
     <>
@@ -64,8 +136,7 @@ function CourseDetail() {
               <Link to="/courses" className="hover:text-foreground">catalog</Link>
               <span>/</span>
               <span>{course.category}</span>
-              <span>/</span>
-              <span className="text-signal">{course.tag}</span>
+              {course.tag && (<><span>/</span><span className="text-signal">{course.tag}</span></>)}
             </div>
             <h1 className="text-4xl leading-tight tracking-tight md:text-5xl">{course.title}</h1>
             <p className="mt-5 max-w-2xl text-lg text-muted-foreground">{course.subtitle}</p>
@@ -80,9 +151,6 @@ function CourseDetail() {
               </div>
               <div className="text-muted-foreground">
                 <span className="font-mono text-foreground">{course.studentsCount.toLocaleString()}</span> students
-              </div>
-              <div className="text-muted-foreground">
-                Updated <span className="text-foreground">{course.updated}</span>
               </div>
               <div className="text-muted-foreground">{course.language}</div>
             </div>
@@ -101,23 +169,48 @@ function CourseDetail() {
           {/* Buy card */}
           <aside className="md:col-span-4">
             <div className="sticky top-20 overflow-hidden rounded-lg border border-border bg-surface">
-              <div className={`relative h-48 bg-gradient-to-br ${course.thumbnailGradient} border-b border-border`}>
+              <div className={`relative h-48 bg-gradient-to-br ${course.thumbnailGradient ?? ""} border-b border-border`}>
                 <div className="grid-lines absolute inset-0 opacity-30" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <PlayCircle className="h-16 w-16 text-foreground/80" />
                 </div>
               </div>
               <div className="p-6">
-                <div className="flex items-baseline gap-2">
-                  <span className="font-mono text-3xl">${course.price}</span>
-                  <span className="mono-label">one-time · lifetime access</span>
-                </div>
-                <button className="mt-5 w-full rounded-md bg-signal py-3 font-mono text-sm font-medium text-signal-foreground transition-opacity hover:opacity-90">
-                  Enroll — pay with UdokktaPay
-                </button>
-                <button className="mt-2 w-full rounded-md border border-border-strong bg-background py-3 font-mono text-sm transition-colors hover:bg-surface-2">
-                  Watch free preview
-                </button>
+                {enrolled ? (
+                  <>
+                    <div className="mono-label mb-2 text-signal">✓ enrolled</div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-mono text-2xl">{progressPct}%</span>
+                      <span className="mono-label">complete · {completedIds.size} / {totalLessons} lessons</span>
+                    </div>
+                    <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-surface-2">
+                      <div className="h-full bg-signal transition-all" style={{ width: `${progressPct}%` }} />
+                    </div>
+                    <Link
+                      to="/dashboard"
+                      className="mt-5 flex w-full items-center justify-center rounded-md border border-border-strong bg-background py-3 font-mono text-sm transition-colors hover:bg-surface-2"
+                    >
+                      Go to dashboard →
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-mono text-3xl">${course.price}</span>
+                      <span className="mono-label">one-time · lifetime access</span>
+                    </div>
+                    <button
+                      onClick={handleEnroll}
+                      disabled={enrollMut.isPending}
+                      className="mt-5 w-full rounded-md bg-signal py-3 font-mono text-sm font-medium text-signal-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+                    >
+                      {enrollMut.isPending ? "Enrolling…" : user ? "Enroll — free preview access" : "Sign in to enroll"}
+                    </button>
+                    <p className="mt-2 text-center text-[10px] font-mono text-muted-foreground">
+                      payments via UdokktaPay coming soon
+                    </p>
+                  </>
+                )}
 
                 <ul className="mt-6 space-y-2 border-t border-border pt-6 text-sm text-muted-foreground">
                   <StatRow label="Lessons" value={String(totalLessons)} />
@@ -151,38 +244,50 @@ function CourseDetail() {
                 <div>
                   <div className="mono-label">curriculum</div>
                   <h2 className="mt-1 text-2xl">
-                    {course.modules.length} modules · {totalLessons} lessons
+                    {modules.length} modules · {totalLessons} lessons
                   </h2>
                 </div>
               </div>
               <div className="divide-y divide-border rounded-lg border border-border bg-surface">
-                {course.modules.map((m, mi) => (
+                {modules.map((m, mi) => (
                   <details key={m.id} className="group" open={mi === 0}>
                     <summary className="flex cursor-pointer items-center justify-between px-6 py-4 text-sm">
                       <span className="font-mono">{m.title}</span>
                       <span className="mono-label">{m.lessons.length} lessons</span>
                     </summary>
                     <ul className="border-t border-border">
-                      {m.lessons.map((l) => (
-                        <li key={l.id} className="flex items-center justify-between px-6 py-3 text-sm hover:bg-surface-2">
-                          <div className="flex items-center gap-3">
-                            {l.freePreview ? (
-                              <PlayCircle className="h-4 w-4 text-signal" />
-                            ) : (
-                              <Lock className="h-4 w-4 text-muted-foreground" />
-                            )}
-                            <span>{l.title}</span>
-                            {l.freePreview && (
-                              <span className="mono-label rounded-sm border border-signal/40 bg-signal/10 px-1.5 py-0.5 text-signal">
-                                preview
-                              </span>
-                            )}
-                          </div>
-                          <span className="font-mono text-xs text-muted-foreground">
-                            {formatDuration(l.durationSecs)}
-                          </span>
-                        </li>
-                      ))}
+                      {m.lessons.map((l) => {
+                        const done = completedIds.has(l.id);
+                        const canToggle = enrolled;
+                        return (
+                          <li key={l.id} className="flex items-center justify-between px-6 py-3 text-sm hover:bg-surface-2">
+                            <div className="flex items-center gap-3">
+                              {canToggle ? (
+                                <button
+                                  onClick={() => toggleMut.mutate({ lessonId: l.id, completed: !done })}
+                                  className="text-signal transition-transform hover:scale-110"
+                                  title={done ? "Mark incomplete" : "Mark complete"}
+                                >
+                                  {done ? <CheckCircle2 className="h-4 w-4" /> : <Circle className="h-4 w-4 text-muted-foreground" />}
+                                </button>
+                              ) : l.freePreview ? (
+                                <PlayCircle className="h-4 w-4 text-signal" />
+                              ) : (
+                                <Lock className="h-4 w-4 text-muted-foreground" />
+                              )}
+                              <span className={done ? "text-muted-foreground line-through" : ""}>{l.title}</span>
+                              {l.freePreview && !enrolled && (
+                                <span className="mono-label rounded-sm border border-signal/40 bg-signal/10 px-1.5 py-0.5 text-signal">
+                                  preview
+                                </span>
+                              )}
+                            </div>
+                            <span className="font-mono text-xs text-muted-foreground">
+                              {formatDuration(l.durationSecs)}
+                            </span>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </details>
                 ))}
