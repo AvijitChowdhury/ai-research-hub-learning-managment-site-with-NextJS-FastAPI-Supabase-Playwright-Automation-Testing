@@ -1,15 +1,23 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
 import { CourseCard } from "@/components/course-card";
-import { COURSES } from "@/lib/mock-data";
+import { fetchCourses, type Course } from "@/lib/courses";
 import { ArrowRight, Cpu, FlaskConical, GitBranch, Sigma } from "lucide-react";
 
 export const Route = createFileRoute("/")({
+  loader: () => fetchCourses(),
   component: Home,
+  errorComponent: ({ error }) => (
+    <div className="mx-auto max-w-3xl px-6 py-32 text-center text-muted-foreground">
+      <div className="mono-label">error</div>
+      <p className="mt-3">Couldn't load courses: {(error as Error).message}</p>
+    </div>
+  ),
 });
 
 function Home() {
-  const featured = COURSES.slice(0, 3);
+  const courses = Route.useLoaderData() as Course[];
+  const featured = courses.slice(0, 3);
 
   return (
     <>
@@ -71,7 +79,7 @@ function Home() {
                 {[
                   ["48", "lessons in Transformers From Scratch"],
                   ["1.2k", "students in cohort 026"],
-                  ["6", "instructors, all publishing researchers"],
+                  [String(courses.length), "instructors, all publishing researchers"],
                   ["4.8", "avg rating across every course"],
                 ].map(([n, l]) => (
                   <li key={l} className="flex items-baseline gap-3 border-b border-border pb-3 last:border-b-0 last:pb-0">

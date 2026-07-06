@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
-import { COURSES } from "@/lib/mock-data";
+import { fetchCourses, type Course } from "@/lib/courses";
 import { DollarSign, ShoppingCart, Users, TrendingUp } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
@@ -11,7 +11,13 @@ export const Route = createFileRoute("/admin")({
       { name: "robots", content: "noindex" },
     ],
   }),
+  loader: () => fetchCourses(),
   component: Admin,
+  errorComponent: ({ error }) => (
+    <div className="mx-auto max-w-3xl px-6 py-32 text-center text-muted-foreground">
+      {(error as Error).message}
+    </div>
+  ),
 });
 
 const ORDERS = [
@@ -27,6 +33,7 @@ const ORDERS = [
 
 
 function Admin() {
+  const courses = Route.useLoaderData() as Course[];
   const stats = [
     { icon: DollarSign, label: "Revenue (30d)", value: "$18,420", delta: "+12%" },
     { icon: ShoppingCart, label: "Orders (30d)", value: "142", delta: "+8%" },
@@ -127,7 +134,7 @@ function Admin() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border bg-background">
-              {COURSES.map((c) => (
+              {courses.map((c) => (
                 <tr key={c.id} className="hover:bg-surface">
                   <td className="px-4 py-3">{c.title}</td>
                   <td className="px-4 py-3 text-muted-foreground">{c.instructor.name}</td>

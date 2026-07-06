@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
 import { CourseCard } from "@/components/course-card";
-import { COURSES, CATEGORIES } from "@/lib/mock-data";
+import { fetchCourses, CATEGORIES, type Course } from "@/lib/courses";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 
@@ -17,16 +17,24 @@ export const Route = createFileRoute("/courses")({
       { property: "og:description", content: "Every course in the axiom/lab catalog." },
     ],
   }),
+  loader: () => fetchCourses(),
   component: Catalog,
+  errorComponent: ({ error }) => (
+    <div className="mx-auto max-w-3xl px-6 py-32 text-center text-muted-foreground">
+      <div className="mono-label">error</div>
+      <p className="mt-3">Couldn't load courses: {(error as Error).message}</p>
+    </div>
+  ),
 });
 
 function Catalog() {
+  const courses = Route.useLoaderData() as Course[];
   const [query, setQuery] = useState("");
   const [cat, setCat] = useState<string | null>(null);
   const [level, setLevel] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
-    return COURSES.filter((c) => {
+    return courses.filter((c) => {
       if (cat && c.category !== cat) return false;
       if (level && c.level !== level) return false;
       if (query) {
@@ -39,7 +47,7 @@ function Catalog() {
       }
       return true;
     });
-  }, [query, cat, level]);
+  }, [courses, query, cat, level]);
 
   return (
     <>
@@ -49,7 +57,7 @@ function Catalog() {
         <div className="mx-auto max-w-7xl px-6 py-16">
           <div className="mono-label mb-4">/ catalog</div>
           <h1 className="text-4xl md:text-5xl tracking-tight">
-            {COURSES.length} courses. Every one taught by a working AI researcher.
+            {courses.length} courses. Every one taught by a working AI researcher.
           </h1>
 
           <div className="mt-10 flex flex-col gap-3 md:flex-row md:items-center">

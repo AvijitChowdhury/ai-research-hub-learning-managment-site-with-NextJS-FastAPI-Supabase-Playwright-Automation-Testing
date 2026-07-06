@@ -1,4 +1,4 @@
-import type { Course } from "@/lib/mock-data";
+import type { Course } from "@/lib/courses";
 import { Link } from "@tanstack/react-router";
 import { Star } from "lucide-react";
 
@@ -10,14 +10,16 @@ export function CourseCard({ course }: { course: Course }) {
       className="card-hover group relative flex flex-col overflow-hidden rounded-lg border border-border bg-surface"
     >
       <div
-        className={`relative h-40 overflow-hidden bg-gradient-to-br ${course.thumbnailGradient} border-b border-border`}
+        className={`relative h-40 overflow-hidden bg-gradient-to-br ${course.thumbnailGradient ?? ""} border-b border-border`}
       >
         <div className="grid-lines absolute inset-0 opacity-30" />
         <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
         <div className="absolute inset-0 flex items-end justify-between p-4">
-          <span className="mono-label rounded-sm border border-border-strong bg-background/70 px-2 py-1 text-foreground/80 backdrop-blur">
-            {course.tag}
-          </span>
+          {course.tag && (
+            <span className="mono-label rounded-sm border border-border-strong bg-background/70 px-2 py-1 text-foreground/80 backdrop-blur">
+              {course.tag}
+            </span>
+          )}
           <span className="mono-label rounded-sm border border-signal/40 bg-signal/10 px-2 py-1 text-signal backdrop-blur">
             {course.level}
           </span>
