@@ -3,7 +3,7 @@ import { SiteHeader, SiteFooter } from "@/components/site-chrome";
 import { COURSES, ENROLLMENTS, courseBySlug } from "@/lib/mock-data";
 import { ArrowRight, Clock, Trophy } from "lucide-react";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "Dashboard — axiom/lab" },
