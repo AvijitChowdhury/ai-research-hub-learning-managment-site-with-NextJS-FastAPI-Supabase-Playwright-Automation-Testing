@@ -65,18 +65,20 @@ function CheckoutReturn() {
   return (
     <>
       <SiteHeader />
+      <main>
       <section className="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center px-6 py-24 text-center">
         {state.kind === "loading" && (
           <>
-            <Loader2 className="h-10 w-10 animate-spin text-signal" />
-            <div className="mono-label mt-6">verifying payment</div>
+            <Loader2 className="h-10 w-10 animate-spin text-signal" aria-hidden="true" />
+            <h1 className="mono-label mt-6 text-base font-normal">Verifying payment</h1>
             <p className="mt-2 text-muted-foreground">Hold on while we confirm with UdokktaPay…</p>
           </>
         )}
         {state.kind === "paid" && (
           <>
-            <CheckCircle2 className="h-12 w-12 text-signal" />
+            <CheckCircle2 className="h-12 w-12 text-signal" aria-hidden="true" />
             <h1 className="mt-6 text-3xl">Payment confirmed</h1>
+
             <p className="mt-3 text-muted-foreground">You're enrolled. Redirecting to your course…</p>
           </>
         )}
