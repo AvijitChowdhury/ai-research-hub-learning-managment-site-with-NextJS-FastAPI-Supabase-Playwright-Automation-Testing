@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
-import { courseBySlug, formatDuration, COURSES } from "@/lib/mock-data";
+import { courseBySlug, formatDuration, COURSES, type Course, type Module, type Lesson } from "@/lib/mock-data";
 import { CourseCard } from "@/components/course-card";
 import { CheckCircle2, Lock, PlayCircle, Star } from "lucide-react";
 
