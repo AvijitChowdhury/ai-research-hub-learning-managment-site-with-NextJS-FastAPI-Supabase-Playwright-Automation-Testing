@@ -51,7 +51,7 @@ export function SiteHeader() {
           </Link>
           <Link
             to="/courses"
-            className="rounded-md bg-signal px-3 py-1.5 text-xs font-mono font-medium text-signal-foreground transition-opacity hover:opacity-90"
+            className="rounded-md bg-signal px-3 py-1.5 text-xs font-mono font-medium text-signal-foreground shadow-[0_0_20px_-4px_var(--signal-glow)] transition-all hover:brightness-110"
           >
             Enroll →
           </Link>
