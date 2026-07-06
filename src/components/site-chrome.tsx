@@ -1,4 +1,16 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useAuth, useProfile } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { LogOut, LayoutDashboard, User } from "lucide-react";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -9,6 +21,22 @@ const NAV = [
 
 export function SiteHeader() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { user, isAuthenticated } = useAuth();
+  const profile = useProfile(user?.id);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const displayName =
+    profile?.display_name ||
+    (user?.email ? user.email.split("@")[0] : "you");
+  const initials = (displayName || "?").slice(0, 2).toUpperCase();
+
+  async function handleSignOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/", replace: true });
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
@@ -42,19 +70,54 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          <span className="mono-label hidden md:inline">v0.1 · public preview</span>
-          <Link
-            to="/courses"
-            className="rounded-md border border-border-strong bg-surface px-3 py-1.5 text-xs font-mono text-foreground transition-colors hover:bg-surface-2"
-          >
-            Sign in
-          </Link>
-          <Link
-            to="/courses"
-            className="rounded-md bg-signal px-3 py-1.5 text-xs font-mono font-medium text-signal-foreground shadow-[0_0_20px_-4px_var(--signal-glow)] transition-all hover:brightness-110"
-          >
-            Enroll →
-          </Link>
+          <span className="mono-label hidden lg:inline">v0.1 · public preview</span>
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-2 rounded-md border border-border-strong bg-surface px-2 py-1 text-xs font-mono transition-colors hover:bg-surface-2">
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-sm bg-signal/20 text-signal font-medium">
+                    {initials}
+                  </span>
+                  <span className="hidden sm:inline max-w-[100px] truncate">{displayName}</span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 font-mono text-xs">
+                <DropdownMenuLabel className="text-muted-foreground truncate">
+                  {user?.email}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard" className="flex items-center gap-2">
+                    <LayoutDashboard className="h-3.5 w-3.5" /> Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/courses" className="flex items-center gap-2">
+                    <User className="h-3.5 w-3.5" /> Browse courses
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+                  <LogOut className="mr-2 h-3.5 w-3.5" /> Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Link
+                to="/auth"
+                className="rounded-md border border-border-strong bg-surface px-3 py-1.5 text-xs font-mono text-foreground transition-colors hover:bg-surface-2"
+              >
+                Sign in
+              </Link>
+              <Link
+                to="/auth"
+                className="rounded-md bg-signal px-3 py-1.5 text-xs font-mono font-medium text-signal-foreground shadow-[0_0_20px_-4px_var(--signal-glow)] transition-all hover:brightness-110"
+              >
+                Enroll →
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
