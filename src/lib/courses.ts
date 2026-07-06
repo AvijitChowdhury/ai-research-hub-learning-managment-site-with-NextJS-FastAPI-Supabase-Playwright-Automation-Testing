@@ -111,11 +111,12 @@ export async function fetchCourseBySlug(slug: string): Promise<Course | null> {
   const modIds = (mods ?? []).map((m) => m.id);
   const { data: lessons, error: lessErr } = modIds.length
     ? await supabase
-        .from("lessons")
+        .from("lessons_public" as any)
         .select("id,module_id,title,duration_secs,type,free_preview,sort_order")
         .in("module_id", modIds)
         .order("sort_order", { ascending: true })
     : { data: [], error: null };
+
   if (lessErr) throw lessErr;
 
   const modules: Module[] = (mods ?? []).map((m) => ({
