@@ -18,6 +18,7 @@ import { CheckCircle2, Circle, Lock, PlayCircle, Star } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
+import { createUddoktapayCheckout } from "@/lib/checkout.functions";
 
 export const Route = createFileRoute("/courses/$slug")({
   loader: async ({ params }) => {
