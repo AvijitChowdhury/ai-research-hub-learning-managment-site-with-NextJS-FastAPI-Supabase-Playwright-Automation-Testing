@@ -126,13 +126,13 @@ function LearnPage() {
     navigate({ to: "/courses/$slug", params: { slug } });
   }, [authLoading, user, enrolledQuery.data, enrolledQuery.isLoading, current?.freePreview, navigate, slug]);
 
-  if (!current) {
-    // Auto-redirect to the first lesson when the ID is unknown.
-    useEffect(() => {
-      if (flat[0]) navigate({ to: "/_authenticated/learn/$slug/$lessonId" as any, params: { slug, lessonId: flat[0].id }, replace: true } as any);
-    }, [flat, navigate, slug]);
-    return null;
-  }
+  // Auto-redirect to the first lesson when the ID is unknown.
+  useEffect(() => {
+    if (current) return;
+    if (flat[0]) navigate({ to: "/learn/$slug/$lessonId", params: { slug, lessonId: flat[0].id }, replace: true });
+  }, [current, flat, navigate, slug]);
+
+  if (!current) return null;
 
   async function markCompleteAndNext() {
     if (!done) await toggleMut.mutateAsync({ id: current!.id, completed: true });
