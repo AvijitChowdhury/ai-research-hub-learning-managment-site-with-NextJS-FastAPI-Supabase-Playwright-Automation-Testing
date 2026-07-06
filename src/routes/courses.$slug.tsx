@@ -424,8 +424,10 @@ function CourseDetail() {
         </section>
       )}
 
+      </main>
       <SiteFooter />
     </>
+
   );
 }
 
