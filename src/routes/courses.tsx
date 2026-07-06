@@ -79,8 +79,10 @@ function Catalog() {
   return (
     <>
       <SiteHeader />
+      <main>
 
       <section className="border-b border-border">
+
         <div className="mx-auto max-w-7xl px-6 py-16">
           <div className="mono-label mb-4">/ catalog</div>
           <h1 className="text-4xl md:text-5xl tracking-tight">
