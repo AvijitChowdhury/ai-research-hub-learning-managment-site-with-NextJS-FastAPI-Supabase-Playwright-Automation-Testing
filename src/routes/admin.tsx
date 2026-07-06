@@ -33,6 +33,7 @@ const ORDERS = [
 
 
 function Admin() {
+  const courses = Route.useLoaderData() as Course[];
   const stats = [
     { icon: DollarSign, label: "Revenue (30d)", value: "$18,420", delta: "+12%" },
     { icon: ShoppingCart, label: "Orders (30d)", value: "142", delta: "+8%" },
