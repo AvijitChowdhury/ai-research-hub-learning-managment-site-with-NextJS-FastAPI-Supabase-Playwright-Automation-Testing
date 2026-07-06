@@ -84,6 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Rigorous, code-forward courses on transformers, RLHF, diffusion models, and ML systems — taught by working AI researchers.",
       },
       { name: "author", content: "axiom/lab" },
+      { property: "og:site_name", content: "axiom/lab" },
       { property: "og:title", content: "axiom/lab — a research LMS for AI" },
       {
         property: "og:description",
@@ -93,20 +94,42 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "axiom/lab — a research LMS for AI" },
-      { name: "description", content: "Rigorous, code-forward courses on transformers, RLHF, diffusion models, and ML systems — taught by working AI researchers." },
-      { property: "og:description", content: "Rigorous, code-forward courses on transformers, RLHF, diffusion models, and ML systems — taught by working AI researchers." },
-      { name: "twitter:description", content: "Rigorous, code-forward courses on transformers, RLHF, diffusion models, and ML systems — taught by working AI researchers." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2642ed85-d7de-4760-b14f-1f8b8967f618" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2642ed85-d7de-4760-b14f-1f8b8967f618" },
+      {
+        name: "twitter:description",
+        content:
+          "Rigorous, code-forward courses on transformers, RLHF, diffusion models, and ML systems.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2642ed85-d7de-4760-b14f-1f8b8967f618",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2642ed85-d7de-4760-b14f-1f8b8967f618",
+      },
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
+      { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "axiom/lab",
+          url: "https://teach-research-ai-avi.lovable.app",
+          description:
+            "A research-grade learning platform for people doing AI: transformers, RLHF, diffusion, RL, and ML systems.",
+          logo: "https://teach-research-ai-avi.lovable.app/favicon.ico",
+        }),
+      },
+    ],
   }),
+
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
