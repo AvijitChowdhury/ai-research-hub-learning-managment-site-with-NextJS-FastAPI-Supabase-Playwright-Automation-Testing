@@ -134,7 +134,7 @@ function Admin() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border bg-background">
-              {COURSES.map((c) => (
+              {courses.map((c) => (
                 <tr key={c.id} className="hover:bg-surface">
                   <td className="px-4 py-3">{c.title}</td>
                   <td className="px-4 py-3 text-muted-foreground">{c.instructor.name}</td>
