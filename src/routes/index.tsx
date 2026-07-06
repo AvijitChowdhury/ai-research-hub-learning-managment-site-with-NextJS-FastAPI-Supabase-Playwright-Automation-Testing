@@ -141,7 +141,7 @@ function Home() {
                 <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-md border border-signal/30 bg-signal/10 text-signal transition-all group-hover:border-signal/60 group-hover:shadow-[0_0_20px_-4px_var(--signal-glow)]">
                   <IconComp className="h-4 w-4" />
                 </div>
-                <h3 className="text-sm font-medium">{title as string}</h3>
+                <h2 className="text-sm font-medium">{title as string}</h2>
                 <p className="mt-2 text-sm text-muted-foreground">{body as string}</p>
               </div>
             );
