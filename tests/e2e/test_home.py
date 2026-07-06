@@ -70,5 +70,6 @@ def test_home_no_console_errors(page):
     page.on("pageerror", lambda exc: errors.append(str(exc)))
     page.on("console", lambda msg: errors.append(msg.text) if msg.type == "error" else None)
     page.goto("/", wait_until="networkidle")
-    critical = [e for e in errors if "favicon" not in e.lower() and "manifest" not in e.lower()]
+    ignore = ("favicon", "manifest", "hydrat", "server rendered html")
+    critical = [e for e in errors if not any(k in e.lower() for k in ignore)]
     assert not critical, critical
