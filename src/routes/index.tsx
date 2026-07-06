@@ -149,11 +149,13 @@ function Home() {
 
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-6 py-24">
-        <div className="relative overflow-hidden rounded-xl border border-border bg-surface p-12 md:p-16">
-          <div className="grid-lines absolute inset-0 opacity-[0.08]" />
+        <div className="relative overflow-hidden rounded-xl border border-signal/20 bg-gradient-to-br from-surface via-surface to-surface-2 p-12 md:p-16">
+          <div className="grid-lines-fine absolute inset-0" />
+          <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-signal/20 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-plum/15 blur-3xl" />
           <div className="relative flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
             <div className="max-w-xl">
-              <div className="mono-label mb-3">$ start</div>
+              <div className="mono-label mb-3 text-signal">$ start</div>
               <h2 className="text-3xl md:text-4xl">Enroll in cohort 026.</h2>
               <p className="mt-3 text-muted-foreground">
                 One-time payment. Lifetime access. New cohorts every two months with live office
@@ -162,7 +164,7 @@ function Home() {
             </div>
             <Link
               to="/courses"
-              className="inline-flex items-center gap-2 rounded-md bg-signal px-6 py-3 font-mono text-sm font-medium text-signal-foreground"
+              className="inline-flex items-center gap-2 rounded-md bg-signal px-6 py-3 font-mono text-sm font-medium text-signal-foreground shadow-[0_0_40px_-8px_var(--signal-glow)] transition-all hover:brightness-110"
             >
               See all courses <ArrowRight className="h-4 w-4" />
             </Link>
