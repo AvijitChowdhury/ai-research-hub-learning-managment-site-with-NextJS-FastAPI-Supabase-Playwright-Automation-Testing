@@ -6,10 +6,11 @@ import {
   fetchAllMyProgress,
   type Course,
 } from "@/lib/courses";
+import { fetchMyCertificates } from "@/lib/certificates";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { useProfile } from "@/hooks/use-auth";
-import { ArrowRight, Clock, Trophy } from "lucide-react";
+import { ArrowRight, Award, Clock, Trophy } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({

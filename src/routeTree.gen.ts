@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
+import { Route as CertificatesCodeRouteImport } from './routes/certificates.$code'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminOrdersRouteImport } from './routes/_authenticated/admin.orders'
@@ -49,6 +50,11 @@ const CoursesSlugRoute = CoursesSlugRouteImport.update({
 const CheckoutReturnRoute = CheckoutReturnRouteImport.update({
   id: '/checkout/return',
   path: '/checkout/return',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CertificatesCodeRoute = CertificatesCodeRouteImport.update({
+  id: '/certificates/$code',
+  path: '/certificates/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/courses': typeof CoursesRouteWithChildren
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/certificates/$code': typeof CertificatesCodeRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/admin/orders': typeof AuthenticatedAdminOrdersRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByTo {
   '/courses': typeof CoursesRouteWithChildren
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/certificates/$code': typeof CertificatesCodeRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/admin/orders': typeof AuthenticatedAdminOrdersRoute
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/courses': typeof CoursesRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/certificates/$code': typeof CertificatesCodeRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/_authenticated/admin/orders': typeof AuthenticatedAdminOrdersRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/admin'
     | '/dashboard'
+    | '/certificates/$code'
     | '/checkout/return'
     | '/courses/$slug'
     | '/admin/orders'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/admin'
     | '/dashboard'
+    | '/certificates/$code'
     | '/checkout/return'
     | '/courses/$slug'
     | '/admin/orders'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
+    | '/certificates/$code'
     | '/checkout/return'
     | '/courses/$slug'
     | '/_authenticated/admin/orders'
@@ -175,6 +187,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   CoursesRoute: typeof CoursesRouteWithChildren
+  CertificatesCodeRoute: typeof CertificatesCodeRoute
   CheckoutReturnRoute: typeof CheckoutReturnRoute
   ApiPublicWebhooksUddoktapayRoute: typeof ApiPublicWebhooksUddoktapayRoute
 }
@@ -221,6 +234,13 @@ declare module '@tanstack/react-router' {
       path: '/checkout/return'
       fullPath: '/checkout/return'
       preLoaderRoute: typeof CheckoutReturnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/certificates/$code': {
+      id: '/certificates/$code'
+      path: '/certificates/$code'
+      fullPath: '/certificates/$code'
+      preLoaderRoute: typeof CertificatesCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -312,6 +332,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   CoursesRoute: CoursesRouteWithChildren,
+  CertificatesCodeRoute: CertificatesCodeRoute,
   CheckoutReturnRoute: CheckoutReturnRoute,
   ApiPublicWebhooksUddoktapayRoute: ApiPublicWebhooksUddoktapayRoute,
 }
