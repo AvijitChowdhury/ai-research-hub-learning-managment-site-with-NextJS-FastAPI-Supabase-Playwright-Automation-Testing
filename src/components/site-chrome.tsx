@@ -14,7 +14,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-8 px-6">
         <Link to="/" className="flex items-center gap-2 font-mono text-sm font-medium">
-          <span className="inline-flex h-6 w-6 items-center justify-center rounded-sm bg-signal text-signal-foreground font-bold">
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-sm bg-signal text-signal-foreground font-bold shadow-[0_0_16px_-2px_var(--signal-glow)]">
             ∴
           </span>
           <span>axiom<span className="text-muted-foreground">/lab</span></span>
