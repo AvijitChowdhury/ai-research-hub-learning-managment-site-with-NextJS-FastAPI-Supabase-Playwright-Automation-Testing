@@ -34,8 +34,10 @@ def test_catalog_search_filter(page):
 
 
 def test_catalog_search_empty_state(page):
-    page.goto("/courses")
-    page.get_by_placeholder("Search courses, topics, instructors…").fill("zzzzzzzzz-nothing")
+    page.goto("/courses", wait_until="networkidle")
+    box = page.get_by_placeholder("Search courses, topics, instructors…")
+    box.click()
+    box.type("zzzzzzzzz-nothing", delay=20)
     page.wait_for_timeout(500)
     body = page.locator("body").inner_text().lower()
     assert "no courses" in body or "0 result" in body
