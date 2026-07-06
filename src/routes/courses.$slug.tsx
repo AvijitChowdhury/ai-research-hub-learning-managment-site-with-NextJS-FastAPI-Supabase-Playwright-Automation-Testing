@@ -13,6 +13,7 @@ import {
   type Lesson,
 } from "@/lib/courses";
 import { CourseCard } from "@/components/course-card";
+import { ReviewsSection } from "@/components/reviews-section";
 import { CheckCircle2, Circle, Lock, PlayCircle, Star } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
