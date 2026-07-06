@@ -188,7 +188,9 @@ function CertificatePage() {
         )}
       </section>
 
+      </main>
       <SiteFooter />
+
     </>
   );
 }
