@@ -7,6 +7,13 @@ import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 type Search = { invoice_id?: string; order_id?: string };
 
 export const Route = createFileRoute("/checkout/return")({
+  head: () => ({
+    meta: [
+      { title: "Checkout — axiom/lab" },
+      { name: "description", content: "Verifying your payment and enrollment." },
+      { name: "robots", content: "noindex" },
+    ],
+  }),
   validateSearch: (s: Record<string, unknown>): Search => ({
     invoice_id: typeof s.invoice_id === "string" ? s.invoice_id : undefined,
     order_id: typeof s.order_id === "string" ? s.order_id : undefined,
@@ -20,6 +27,7 @@ export const Route = createFileRoute("/checkout/return")({
   notFoundComponent: () => null,
   component: CheckoutReturn,
 });
+
 
 function CheckoutReturn() {
   const { invoice_id, order_id } = Route.useSearch();
