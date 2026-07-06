@@ -116,12 +116,20 @@ function AdminPage() {
               <h1 className="text-3xl">Content management</h1>
               <p className="mt-1 text-sm text-muted-foreground">Create, edit, and publish courses.</p>
             </div>
-            <button
-              onClick={() => setShowNew(true)}
-              className="inline-flex items-center gap-1.5 rounded-md bg-signal px-3 py-1.5 font-mono text-xs text-signal-foreground"
-            >
-              <Plus className="h-3.5 w-3.5" /> New course
-            </button>
+            <div className="flex items-center gap-2">
+              <Link
+                to="/admin/orders"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-xs hover:bg-surface-2"
+              >
+                <ShoppingCart className="h-3.5 w-3.5" /> Orders
+              </Link>
+              <button
+                onClick={() => setShowNew(true)}
+                className="inline-flex items-center gap-1.5 rounded-md bg-signal px-3 py-1.5 font-mono text-xs text-signal-foreground"
+              >
+                <Plus className="h-3.5 w-3.5" /> New course
+              </button>
+            </div>
           </div>
         </div>
       </section>
