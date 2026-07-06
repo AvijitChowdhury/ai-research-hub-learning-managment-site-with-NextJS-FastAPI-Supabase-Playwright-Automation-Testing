@@ -4,7 +4,7 @@ import {
   fetchCourseBySlug,
   fetchCourses,
   formatDuration,
-  enrollInCourse,
+  
   isEnrolled,
   fetchMyProgressForCourse,
   toggleLessonComplete,
@@ -18,6 +18,7 @@ import { CheckCircle2, Circle, Lock, PlayCircle, Star } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
+import { createUddoktapayCheckout } from "@/lib/checkout.functions";
 
 export const Route = createFileRoute("/courses/$slug")({
   loader: async ({ params }) => {
@@ -94,8 +95,17 @@ function CourseDetail() {
   });
 
   const enrollMut = useMutation({
-    mutationFn: () => enrollInCourse(course.id),
-    onSuccess: () => {
+    mutationFn: async () => {
+      const res = await createUddoktapayCheckout({ data: { courseId: course.id } });
+      return res;
+    },
+    onSuccess: (res) => {
+      if (res.payment_url) {
+        toast.message("Redirecting to secure checkout…");
+        window.location.href = res.payment_url;
+        return;
+      }
+      // free course or already enrolled
       toast.success("You're enrolled. Start learning below.");
       qc.invalidateQueries({ queryKey: ["enrolled", course.id] });
       qc.invalidateQueries({ queryKey: ["my-enrollments"] });
@@ -218,10 +228,16 @@ function CourseDetail() {
                       disabled={enrollMut.isPending}
                       className="mt-5 w-full rounded-md bg-signal py-3 font-mono text-sm font-medium text-signal-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
                     >
-                      {enrollMut.isPending ? "Enrolling…" : user ? "Enroll — free preview access" : "Sign in to enroll"}
+                      {enrollMut.isPending
+                        ? "Redirecting…"
+                        : !user
+                          ? "Sign in to enroll"
+                          : course.price > 0
+                            ? `Pay $${course.price} — enroll`
+                            : "Enroll — free"}
                     </button>
                     <p className="mt-2 text-center text-[10px] font-mono text-muted-foreground">
-                      payments via UdokktaPay coming soon
+                      {course.price > 0 ? "secure checkout via UdokktaPay" : "no payment required"}
                     </p>
                   </>
                 )}

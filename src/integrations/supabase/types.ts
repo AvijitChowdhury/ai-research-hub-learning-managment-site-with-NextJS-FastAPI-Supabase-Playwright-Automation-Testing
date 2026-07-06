@@ -260,6 +260,59 @@ export type Database = {
           },
         ]
       }
+      orders: {
+        Row: {
+          amount_cents: number
+          course_id: string
+          created_at: string
+          currency: string
+          id: string
+          metadata: Json
+          provider: string
+          provider_invoice_id: string | null
+          provider_transaction_id: string | null
+          status: Database["public"]["Enums"]["order_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents: number
+          course_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json
+          provider?: string
+          provider_invoice_id?: string | null
+          provider_transaction_id?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          course_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json
+          provider?: string
+          provider_invoice_id?: string | null
+          provider_transaction_id?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -366,6 +419,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "instructor" | "student"
+      order_status: "pending" | "paid" | "failed" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -494,6 +548,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "instructor", "student"],
+      order_status: ["pending", "paid", "failed", "cancelled"],
     },
   },
 } as const
