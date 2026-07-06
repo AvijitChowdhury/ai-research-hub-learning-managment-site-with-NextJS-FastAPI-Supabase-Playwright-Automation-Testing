@@ -23,6 +23,7 @@ export const Route = createFileRoute("/certificates/$code")({
     const name = cert.profiles?.display_name || "A student";
     const title = cert.courses?.title || "a course";
     const desc = `${name} completed ${title} on axiom/lab.`;
+    const url = `https://teach-research-ai-avi.lovable.app/certificates/${cert.code}`;
     return {
       meta: [
         { title: `Certificate — ${title} — axiom/lab` },
@@ -30,10 +31,13 @@ export const Route = createFileRoute("/certificates/$code")({
         { property: "og:title", content: `Certificate — ${title}` },
         { property: "og:description", content: desc },
         { property: "og:type", content: "profile" },
+        { property: "og:url", content: url },
         { name: "twitter:card", content: "summary_large_image" },
       ],
+      links: [{ rel: "canonical", href: url }],
     };
   },
+
   notFoundComponent: CertNotFound,
   errorComponent: ({ error, reset }) => (
     <>
