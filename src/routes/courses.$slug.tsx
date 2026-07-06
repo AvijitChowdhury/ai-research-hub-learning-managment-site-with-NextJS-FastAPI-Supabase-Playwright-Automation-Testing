@@ -44,11 +44,11 @@ export const Route = createFileRoute("/courses/$slug")({
 });
 
 function CourseDetail() {
-  const { course } = Route.useLoaderData();
+  const { course } = Route.useLoaderData() as { course: Course };
   const related = COURSES.filter((c) => c.slug !== course.slug && c.category === course.category).slice(0, 3);
-  const totalLessons = course.modules.reduce((n, m) => n + m.lessons.length, 0);
+  const totalLessons = course.modules.reduce((n: number, m: Module) => n + m.lessons.length, 0);
   const totalSecs = course.modules.reduce(
-    (n, m) => n + m.lessons.reduce((s, l) => s + l.durationSecs, 0),
+    (n: number, m: Module) => n + m.lessons.reduce((s: number, l: Lesson) => s + l.durationSecs, 0),
     0,
   );
 
