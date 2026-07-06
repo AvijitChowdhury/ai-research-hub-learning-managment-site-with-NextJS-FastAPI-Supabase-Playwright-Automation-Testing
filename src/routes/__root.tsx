@@ -92,6 +92,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "axiom/lab — a research LMS for AI" },
+      { name: "description", content: "Rigorous, code-forward courses on transformers, RLHF, diffusion models, and ML systems — taught by working AI researchers." },
+      { property: "og:description", content: "Rigorous, code-forward courses on transformers, RLHF, diffusion models, and ML systems — taught by working AI researchers." },
+      { name: "twitter:description", content: "Rigorous, code-forward courses on transformers, RLHF, diffusion models, and ML systems — taught by working AI researchers." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2642ed85-d7de-4760-b14f-1f8b8967f618" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2642ed85-d7de-4760-b14f-1f8b8967f618" },
     ],
     links: [
       {
