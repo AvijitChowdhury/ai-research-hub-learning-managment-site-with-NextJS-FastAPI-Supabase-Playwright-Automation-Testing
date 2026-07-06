@@ -30,8 +30,14 @@ export async function fetchMyCertificates(): Promise<
 export async function fetchCertificateByCode(
   code: string
 ): Promise<CertificateWithDetails | null> {
+  // Guard: verify_certificate expects a uuid; invalid input would throw 22P02.
+  const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!uuidRe.test(code)) return null;
   const { data, error } = await supabase.rpc("verify_certificate" as any, { _code: code });
-  if (error) throw error;
+  if (error) {
+    if ((error as any).code === "22P02") return null;
+    throw error;
+  }
   const row = Array.isArray(data) ? data[0] : null;
   if (!row) return null;
   return {
@@ -46,6 +52,7 @@ export async function fetchCertificateByCode(
     profiles: { display_name: row.student_name },
   };
 }
+
 
 
 export async function fetchMyCertificateForCourse(
