@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
-import { COURSES } from "@/lib/mock-data";
+import { fetchCourses, type Course } from "@/lib/courses";
 import { DollarSign, ShoppingCart, Users, TrendingUp } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
@@ -11,7 +11,13 @@ export const Route = createFileRoute("/admin")({
       { name: "robots", content: "noindex" },
     ],
   }),
+  loader: () => fetchCourses(),
   component: Admin,
+  errorComponent: ({ error }) => (
+    <div className="mx-auto max-w-3xl px-6 py-32 text-center text-muted-foreground">
+      {(error as Error).message}
+    </div>
+  ),
 });
 
 const ORDERS = [
