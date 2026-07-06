@@ -38,6 +38,12 @@ function Dashboard() {
     queryFn: fetchAllMyProgress,
     enabled: !!user,
   });
+  const certsQ = useQuery({
+    queryKey: ["my-certificates", user?.id],
+    queryFn: fetchMyCertificates,
+    enabled: !!user,
+  });
+  const certByCourse = new Map((certsQ.data ?? []).map((c) => [c.course_id, c.code]));
 
   const courses = coursesQ.data ?? [];
   const enrollments = enrollmentsQ.data ?? [];
