@@ -24,7 +24,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 function Dashboard() {
   const { user } = useAuth();
-  const { profile } = useProfile();
+  const profile = useProfile(user?.id);
 
   const coursesQ = useQuery({ queryKey: ["courses"], queryFn: fetchCourses });
   const enrollmentsQ = useQuery({
