@@ -13,6 +13,7 @@ import {
   type Lesson,
 } from "@/lib/courses";
 import { CourseCard } from "@/components/course-card";
+import { ReviewsSection } from "@/components/reviews-section";
 import { CheckCircle2, Circle, Lock, PlayCircle, Star } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
@@ -342,29 +343,15 @@ function CourseDetail() {
             </div>
           </div>
 
-          {/* Right column: rating breakdown */}
+          {/* Right column: reviews */}
           <aside className="md:col-span-4">
-            <div className="rounded-lg border border-border bg-surface p-6">
-              <div className="mono-label mb-4">student reviews</div>
-              <div className="flex items-baseline gap-3">
-                <span className="font-mono text-5xl">{course.rating.toFixed(1)}</span>
-                <span className="mono-label">/ 5.00</span>
-              </div>
-              <div className="mt-6 space-y-2">
-                {[5, 4, 3, 2, 1].map((s) => {
-                  const pct = s === 5 ? 78 : s === 4 ? 17 : s === 3 ? 3 : s === 2 ? 1 : 1;
-                  return (
-                    <div key={s} className="flex items-center gap-3 text-xs">
-                      <span className="w-6 font-mono">{s}★</span>
-                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2">
-                        <div className="h-full bg-signal" style={{ width: `${pct}%` }} />
-                      </div>
-                      <span className="w-8 font-mono text-muted-foreground">{pct}%</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <ReviewsSection
+              courseId={course.id}
+              courseTitle={course.title}
+              enrolled={enrolled}
+              fallbackRating={course.rating}
+              fallbackReviewsCount={course.reviewsCount}
+            />
           </aside>
         </div>
       </section>
