@@ -17,6 +17,7 @@ import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminOrdersRouteImport } from './routes/_authenticated/admin.orders'
 import { Route as ApiPublicWebhooksUddoktapayRouteImport } from './routes/api/public/webhooks.uddoktapay'
 import { Route as AuthenticatedLearnSlugLessonIdRouteImport } from './routes/_authenticated/learn.$slug.$lessonId'
 import { Route as AuthenticatedAdminCoursesIdRouteImport } from './routes/_authenticated/admin.courses.$id'
@@ -60,6 +61,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminOrdersRoute =
+  AuthenticatedAdminOrdersRouteImport.update({
+    id: '/orders',
+    path: '/orders',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const ApiPublicWebhooksUddoktapayRoute =
   ApiPublicWebhooksUddoktapayRouteImport.update({
     id: '/api/public/webhooks/uddoktapay',
@@ -87,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/admin/orders': typeof AuthenticatedAdminOrdersRoute
   '/admin/courses/$id': typeof AuthenticatedAdminCoursesIdRoute
   '/learn/$slug/$lessonId': typeof AuthenticatedLearnSlugLessonIdRoute
   '/api/public/webhooks/uddoktapay': typeof ApiPublicWebhooksUddoktapayRoute
@@ -99,6 +107,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/admin/orders': typeof AuthenticatedAdminOrdersRoute
   '/admin/courses/$id': typeof AuthenticatedAdminCoursesIdRoute
   '/learn/$slug/$lessonId': typeof AuthenticatedLearnSlugLessonIdRoute
   '/api/public/webhooks/uddoktapay': typeof ApiPublicWebhooksUddoktapayRoute
@@ -113,6 +122,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/_authenticated/admin/orders': typeof AuthenticatedAdminOrdersRoute
   '/_authenticated/admin/courses/$id': typeof AuthenticatedAdminCoursesIdRoute
   '/_authenticated/learn/$slug/$lessonId': typeof AuthenticatedLearnSlugLessonIdRoute
   '/api/public/webhooks/uddoktapay': typeof ApiPublicWebhooksUddoktapayRoute
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/checkout/return'
     | '/courses/$slug'
+    | '/admin/orders'
     | '/admin/courses/$id'
     | '/learn/$slug/$lessonId'
     | '/api/public/webhooks/uddoktapay'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/checkout/return'
     | '/courses/$slug'
+    | '/admin/orders'
     | '/admin/courses/$id'
     | '/learn/$slug/$lessonId'
     | '/api/public/webhooks/uddoktapay'
@@ -152,6 +164,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/checkout/return'
     | '/courses/$slug'
+    | '/_authenticated/admin/orders'
     | '/_authenticated/admin/courses/$id'
     | '/_authenticated/learn/$slug/$lessonId'
     | '/api/public/webhooks/uddoktapay'
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/orders': {
+      id: '/_authenticated/admin/orders'
+      path: '/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AuthenticatedAdminOrdersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/api/public/webhooks/uddoktapay': {
       id: '/api/public/webhooks/uddoktapay'
       path: '/api/public/webhooks/uddoktapay'
@@ -249,10 +269,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminOrdersRoute: typeof AuthenticatedAdminOrdersRoute
   AuthenticatedAdminCoursesIdRoute: typeof AuthenticatedAdminCoursesIdRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminOrdersRoute: AuthenticatedAdminOrdersRoute,
   AuthenticatedAdminCoursesIdRoute: AuthenticatedAdminCoursesIdRoute,
 }
 
