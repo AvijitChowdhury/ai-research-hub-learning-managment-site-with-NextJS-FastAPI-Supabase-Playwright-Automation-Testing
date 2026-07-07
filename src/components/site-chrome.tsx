@@ -92,8 +92,13 @@ export function SiteHeader() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/courses" className="flex items-center gap-2">
-                    <User className="h-3.5 w-3.5" /> Browse courses
+                  <Link to="/orders" className="flex items-center gap-2">
+                    <Receipt className="h-3.5 w-3.5" /> Orders
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="flex items-center gap-2">
+                    <User className="h-3.5 w-3.5" /> Profile
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
