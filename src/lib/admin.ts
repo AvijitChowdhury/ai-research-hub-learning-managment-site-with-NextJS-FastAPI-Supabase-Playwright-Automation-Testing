@@ -169,3 +169,76 @@ export async function claimFirstAdmin(): Promise<boolean> {
 }
 
 export type { Course };
+
+// ── Reorder helpers ───────────────────────────────────────────
+export async function reorderModules(orderedIds: string[]) {
+  await Promise.all(
+    orderedIds.map((id, i) =>
+      supabase.from("modules").update({ sort_order: i }).eq("id", id),
+    ),
+  );
+}
+
+export async function reorderLessons(moduleId: string, orderedLessonIds: string[]) {
+  await Promise.all(
+    orderedLessonIds.map((id, i) =>
+      supabase.from("lessons").update({ sort_order: i, module_id: moduleId }).eq("id", id),
+    ),
+  );
+}
+
+// ── Bulk lesson CSV import ────────────────────────────────────
+import { parseCSV, parseDuration, parseBool } from "./csv";
+
+export type BulkImportRow = {
+  index: number;
+  ok: boolean;
+  reason?: string;
+  title?: string;
+};
+
+export async function bulkImportLessons(
+  moduleId: string,
+  csvText: string,
+  currentLessonCount: number,
+): Promise<{ created: number; failed: number; rows: BulkImportRow[] }> {
+  const rows = parseCSV(csvText);
+  if (rows.length === 0) return { created: 0, failed: 0, rows: [] };
+  const headers = rows[0].map((h) => h.toLowerCase());
+  const idx = (name: string) => headers.indexOf(name.toLowerCase());
+  const iTitle = idx("title");
+  const iDuration = idx("duration");
+  const iFree = idx("freePreview");
+  if (iTitle < 0) throw new Error("CSV missing required 'title' column");
+
+  const results: BulkImportRow[] = [];
+  let created = 0;
+  let failed = 0;
+  for (let r = 1; r < rows.length; r++) {
+    const row = rows[r];
+    if (!row || row.every((c) => !c)) continue;
+    const title = row[iTitle]?.trim();
+    if (!title) {
+      results.push({ index: r, ok: false, reason: "Missing title" });
+      failed++;
+      continue;
+    }
+    const dur = iDuration >= 0 ? parseDuration(row[iDuration] ?? "") ?? 0 : 0;
+    const free = iFree >= 0 ? parseBool(row[iFree] ?? "false") : false;
+    try {
+      await createLesson(moduleId, {
+        title,
+        duration_secs: dur,
+        type: "video",
+        free_preview: free,
+        sort_order: currentLessonCount + created,
+      });
+      created++;
+      results.push({ index: r, ok: true, title });
+    } catch (e: any) {
+      failed++;
+      results.push({ index: r, ok: false, reason: e?.message ?? "Insert failed", title });
+    }
+  }
+  return { created, failed, rows: results };
+}
