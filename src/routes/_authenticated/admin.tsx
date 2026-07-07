@@ -116,12 +116,18 @@ function AdminPage() {
               <h1 className="text-3xl">Content management</h1>
               <p className="mt-1 text-sm text-muted-foreground">Create, edit, and publish courses.</p>
             </div>
-            <div className="flex items-center gap-2">
-              <Link
-                to="/admin/orders"
-                className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-xs hover:bg-surface-2"
-              >
+            <div className="flex flex-wrap items-center gap-2">
+              <Link to="/admin/orders" className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-xs hover:bg-surface-2">
                 <ShoppingCart className="h-3.5 w-3.5" /> Orders
+              </Link>
+              <Link to="/admin/analytics" className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-xs hover:bg-surface-2">
+                <TrendingUp className="h-3.5 w-3.5" /> Analytics
+              </Link>
+              <Link to="/admin/instructors" className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-xs hover:bg-surface-2">
+                <Users className="h-3.5 w-3.5" /> Instructors
+              </Link>
+              <Link to="/admin/reviews" className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-xs hover:bg-surface-2">
+                Reviews
               </Link>
               <button
                 onClick={() => setShowNew(true)}
