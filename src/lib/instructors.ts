@@ -50,7 +50,7 @@ export async function updateInstructorAcrossCourses(
   if (Object.keys(update).length === 0) return;
   const { error } = await supabase
     .from("courses")
-    .update(update)
+    .update(update as any)
     .eq("instructor_name", originalName);
   if (error) throw error;
 }
