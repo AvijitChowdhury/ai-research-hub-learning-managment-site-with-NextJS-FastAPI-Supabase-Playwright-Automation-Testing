@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -17,9 +18,14 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as CertificatesCodeRouteImport } from './routes/certificates.$code'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedOrdersRouteImport } from './routes/_authenticated/orders'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminReviewsRouteImport } from './routes/_authenticated/admin.reviews'
 import { Route as AuthenticatedAdminOrdersRouteImport } from './routes/_authenticated/admin.orders'
+import { Route as AuthenticatedAdminInstructorsRouteImport } from './routes/_authenticated/admin.instructors'
+import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin.analytics'
 import { Route as ApiPublicWebhooksUddoktapayRouteImport } from './routes/api/public/webhooks.uddoktapay'
 import { Route as AuthenticatedLearnSlugLessonIdRouteImport } from './routes/_authenticated/learn.$slug.$lessonId'
 import { Route as AuthenticatedAdminCoursesIdRouteImport } from './routes/_authenticated/admin.courses.$id'
@@ -27,6 +33,11 @@ import { Route as AuthenticatedAdminCoursesIdRouteImport } from './routes/_authe
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesRoute = CoursesRouteImport.update({
@@ -63,6 +74,16 @@ const CertificatesCodeRoute = CertificatesCodeRouteImport.update({
   path: '/certificates/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedOrdersRoute = AuthenticatedOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -73,10 +94,28 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminReviewsRoute =
+  AuthenticatedAdminReviewsRouteImport.update({
+    id: '/reviews',
+    path: '/reviews',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminOrdersRoute =
   AuthenticatedAdminOrdersRouteImport.update({
     id: '/orders',
     path: '/orders',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminInstructorsRoute =
+  AuthenticatedAdminInstructorsRouteImport.update({
+    id: '/instructors',
+    path: '/instructors',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminAnalyticsRoute =
+  AuthenticatedAdminAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const ApiPublicWebhooksUddoktapayRoute =
@@ -102,13 +141,19 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/orders': typeof AuthenticatedOrdersRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/certificates/$code': typeof CertificatesCodeRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
   '/admin/orders': typeof AuthenticatedAdminOrdersRoute
+  '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
   '/admin/courses/$id': typeof AuthenticatedAdminCoursesIdRoute
   '/learn/$slug/$lessonId': typeof AuthenticatedLearnSlugLessonIdRoute
   '/api/public/webhooks/uddoktapay': typeof ApiPublicWebhooksUddoktapayRoute
@@ -117,13 +162,19 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/orders': typeof AuthenticatedOrdersRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/certificates/$code': typeof CertificatesCodeRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
   '/admin/orders': typeof AuthenticatedAdminOrdersRoute
+  '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
   '/admin/courses/$id': typeof AuthenticatedAdminCoursesIdRoute
   '/learn/$slug/$lessonId': typeof AuthenticatedLearnSlugLessonIdRoute
   '/api/public/webhooks/uddoktapay': typeof ApiPublicWebhooksUddoktapayRoute
@@ -134,13 +185,19 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/orders': typeof AuthenticatedOrdersRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/certificates/$code': typeof CertificatesCodeRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/_authenticated/admin/instructors': typeof AuthenticatedAdminInstructorsRoute
   '/_authenticated/admin/orders': typeof AuthenticatedAdminOrdersRoute
+  '/_authenticated/admin/reviews': typeof AuthenticatedAdminReviewsRoute
   '/_authenticated/admin/courses/$id': typeof AuthenticatedAdminCoursesIdRoute
   '/_authenticated/learn/$slug/$lessonId': typeof AuthenticatedLearnSlugLessonIdRoute
   '/api/public/webhooks/uddoktapay': typeof ApiPublicWebhooksUddoktapayRoute
@@ -151,13 +208,19 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/courses'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/admin'
     | '/dashboard'
+    | '/orders'
+    | '/profile'
     | '/certificates/$code'
     | '/checkout/return'
     | '/courses/$slug'
+    | '/admin/analytics'
+    | '/admin/instructors'
     | '/admin/orders'
+    | '/admin/reviews'
     | '/admin/courses/$id'
     | '/learn/$slug/$lessonId'
     | '/api/public/webhooks/uddoktapay'
@@ -166,13 +229,19 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/courses'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/admin'
     | '/dashboard'
+    | '/orders'
+    | '/profile'
     | '/certificates/$code'
     | '/checkout/return'
     | '/courses/$slug'
+    | '/admin/analytics'
+    | '/admin/instructors'
     | '/admin/orders'
+    | '/admin/reviews'
     | '/admin/courses/$id'
     | '/learn/$slug/$lessonId'
     | '/api/public/webhooks/uddoktapay'
@@ -182,13 +251,19 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/courses'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
+    | '/_authenticated/orders'
+    | '/_authenticated/profile'
     | '/certificates/$code'
     | '/checkout/return'
     | '/courses/$slug'
+    | '/_authenticated/admin/analytics'
+    | '/_authenticated/admin/instructors'
     | '/_authenticated/admin/orders'
+    | '/_authenticated/admin/reviews'
     | '/_authenticated/admin/courses/$id'
     | '/_authenticated/learn/$slug/$lessonId'
     | '/api/public/webhooks/uddoktapay'
@@ -199,6 +274,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   CoursesRoute: typeof CoursesRouteWithChildren
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   CertificatesCodeRoute: typeof CertificatesCodeRoute
   CheckoutReturnRoute: typeof CheckoutReturnRoute
@@ -212,6 +288,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/courses': {
@@ -263,6 +346,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CertificatesCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/orders': {
+      id: '/_authenticated/orders'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof AuthenticatedOrdersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -277,11 +374,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/reviews': {
+      id: '/_authenticated/admin/reviews'
+      path: '/reviews'
+      fullPath: '/admin/reviews'
+      preLoaderRoute: typeof AuthenticatedAdminReviewsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/orders': {
       id: '/_authenticated/admin/orders'
       path: '/orders'
       fullPath: '/admin/orders'
       preLoaderRoute: typeof AuthenticatedAdminOrdersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/instructors': {
+      id: '/_authenticated/admin/instructors'
+      path: '/instructors'
+      fullPath: '/admin/instructors'
+      preLoaderRoute: typeof AuthenticatedAdminInstructorsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/analytics': {
+      id: '/_authenticated/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/api/public/webhooks/uddoktapay': {
@@ -309,12 +427,18 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
+  AuthenticatedAdminInstructorsRoute: typeof AuthenticatedAdminInstructorsRoute
   AuthenticatedAdminOrdersRoute: typeof AuthenticatedAdminOrdersRoute
+  AuthenticatedAdminReviewsRoute: typeof AuthenticatedAdminReviewsRoute
   AuthenticatedAdminCoursesIdRoute: typeof AuthenticatedAdminCoursesIdRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
+  AuthenticatedAdminInstructorsRoute: AuthenticatedAdminInstructorsRoute,
   AuthenticatedAdminOrdersRoute: AuthenticatedAdminOrdersRoute,
+  AuthenticatedAdminReviewsRoute: AuthenticatedAdminReviewsRoute,
   AuthenticatedAdminCoursesIdRoute: AuthenticatedAdminCoursesIdRoute,
 }
 
@@ -324,12 +448,16 @@ const AuthenticatedAdminRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedOrdersRoute: typeof AuthenticatedOrdersRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedLearnSlugLessonIdRoute: typeof AuthenticatedLearnSlugLessonIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedOrdersRoute: AuthenticatedOrdersRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedLearnSlugLessonIdRoute: AuthenticatedLearnSlugLessonIdRoute,
 }
 
@@ -352,6 +480,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   CoursesRoute: CoursesRouteWithChildren,
+  ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   CertificatesCodeRoute: CertificatesCodeRoute,
   CheckoutReturnRoute: CheckoutReturnRoute,

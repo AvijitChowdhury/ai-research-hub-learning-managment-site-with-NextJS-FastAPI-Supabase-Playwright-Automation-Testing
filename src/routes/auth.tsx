@@ -4,6 +4,8 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
+import { sendPasswordReset } from "@/lib/profile";
+import { t } from "@/lib/i18n";
 import { toast } from "sonner";
 import { ArrowRight, Loader2 } from "lucide-react";
 
