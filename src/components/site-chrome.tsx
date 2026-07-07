@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, LayoutDashboard, User } from "lucide-react";
+import { LogOut, LayoutDashboard, User, Receipt } from "lucide-react";
 
 const NAV = [
   { to: "/", label: "Home" },
