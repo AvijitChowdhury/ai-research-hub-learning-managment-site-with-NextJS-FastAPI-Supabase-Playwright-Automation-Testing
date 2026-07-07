@@ -245,18 +245,15 @@ function ModuleBlock({ index, module: mod, onChange }: { index: number; module: 
           <div className="px-4 py-3 text-xs text-muted-foreground">No lessons yet.</div>
         )}
       </div>
-      <div className="border-t border-border px-4 py-2">
+      <div className="flex flex-wrap items-center gap-2 border-t border-border px-4 py-2">
         <button
           onClick={async () => {
             if (adding) return;
             setAdding(true);
             try {
               await createLesson(mod.id, {
-                title: "New lesson",
-                duration_secs: 600,
-                type: "video",
-                free_preview: false,
-                sort_order: mod.lessons.length,
+                title: "New lesson", duration_secs: 600, type: "video",
+                free_preview: false, sort_order: mod.lessons.length,
               });
               onChange();
             } finally { setAdding(false); }
@@ -264,6 +261,36 @@ function ModuleBlock({ index, module: mod, onChange }: { index: number; module: 
           className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 font-mono text-xs hover:bg-surface-2"
         >
           <Plus className="h-3 w-3" /> Add lesson
+        </button>
+        <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-border px-2 py-1 font-mono text-xs hover:bg-surface-2">
+          <Upload className="h-3 w-3" /> Import CSV
+          <input
+            type="file"
+            accept=".csv,text/csv"
+            className="hidden"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const text = await file.text();
+              try {
+                const res = await bulkImportLessons(mod.id, text, mod.lessons.length);
+                alert(`Imported ${res.created} lesson(s). ${res.failed} failed.` +
+                  (res.failed ? "\n\n" + res.rows.filter(r => !r.ok).map(r => `Row ${r.index}: ${r.reason}`).join("\n") : ""));
+                onChange();
+              } catch (err: any) {
+                alert(err?.message ?? "Import failed");
+              } finally {
+                e.target.value = "";
+              }
+            }}
+          />
+        </label>
+        <button
+          onClick={() => downloadFile("lessons-template.csv", LESSON_CSV_TEMPLATE)}
+          className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 font-mono text-xs hover:bg-surface-2"
+          title="Download CSV template"
+        >
+          <Download className="h-3 w-3" /> Template
         </button>
       </div>
     </div>
