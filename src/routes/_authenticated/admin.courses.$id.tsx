@@ -11,9 +11,12 @@ import {
   createLesson,
   updateLesson,
   deleteLesson,
+  bulkImportLessons,
 } from "@/lib/admin";
+import { LESSON_CSV_TEMPLATE } from "@/lib/csv";
+import { downloadFile } from "@/lib/orders";
 import type { Module, Lesson } from "@/lib/courses";
-import { ArrowLeft, Plus, Trash2, Save } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Save, Upload, Download } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/courses/$id")({
   head: () => ({ meta: [{ title: "Edit course — axiom/lab" }, { name: "robots", content: "noindex" }] }),
