@@ -191,6 +191,26 @@ function AuthPage() {
 
         </form>
 
+        {mode === "signin" && (
+          <div className="mt-4 text-center">
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  const em = emailSchema.parse(email);
+                  await sendPasswordReset(em);
+                  toast.success(t("auth.reset_email_sent"));
+                } catch (e: any) {
+                  toast.error(e?.message ?? "Enter your email above first.");
+                }
+              }}
+              className="mono-label hover:text-foreground"
+            >
+              {t("auth.forgot")}
+            </button>
+          </div>
+        )}
+
         <div className="mt-6 text-center text-sm text-muted-foreground">
           {mode === "signin" ? (
             <>
