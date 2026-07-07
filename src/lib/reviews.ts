@@ -89,3 +89,38 @@ export async function deleteMyReview(courseId: string) {
     .eq("course_id", courseId);
   if (error) throw error;
 }
+
+// ── Admin moderation ──────────────────────────────────────────
+export type AdminReviewRow = {
+  id: string;
+  course_id: string;
+  user_id: string;
+  rating: number;
+  body: string | null;
+  hidden: boolean;
+  created_at: string;
+  courses: { title: string; slug: string } | null;
+  profiles: { display_name: string | null } | null;
+};
+
+export async function adminFetchAllReviews(): Promise<AdminReviewRow[]> {
+  const { data, error } = await supabase
+    .from("reviews")
+    .select(
+      "id,course_id,user_id,rating,body,hidden,created_at,courses:course_id(title,slug),profiles:user_id(display_name)"
+    )
+    .order("created_at", { ascending: false })
+    .limit(500);
+  if (error) throw error;
+  return (data ?? []) as unknown as AdminReviewRow[];
+}
+
+export async function adminSetReviewHidden(id: string, hidden: boolean) {
+  const { error } = await supabase.from("reviews").update({ hidden }).eq("id", id);
+  if (error) throw error;
+}
+
+export async function adminDeleteReview(id: string) {
+  const { error } = await supabase.from("reviews").delete().eq("id", id);
+  if (error) throw error;
+}
