@@ -384,6 +384,7 @@ export type Database = {
           body: string | null
           course_id: string
           created_at: string
+          hidden: boolean
           id: string
           rating: number
           updated_at: string
@@ -393,6 +394,7 @@ export type Database = {
           body?: string | null
           course_id: string
           created_at?: string
+          hidden?: boolean
           id?: string
           rating: number
           updated_at?: string
@@ -402,6 +404,7 @@ export type Database = {
           body?: string | null
           course_id?: string
           created_at?: string
+          hidden?: boolean
           id?: string
           rating?: number
           updated_at?: string
