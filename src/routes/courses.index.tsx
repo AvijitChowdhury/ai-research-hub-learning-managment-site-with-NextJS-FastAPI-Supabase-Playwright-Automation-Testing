@@ -5,7 +5,7 @@ import { fetchCourses, CATEGORIES, type Course } from "@/lib/courses";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 
-export const Route = createFileRoute("/courses")({
+export const Route = createFileRoute("/courses/")({
   head: ({ loaderData }) => {
     const url = "https://teach-research-ai-avi.lovable.app/courses";
     const items = (loaderData ?? []) as Course[];
