@@ -12,7 +12,7 @@ import {
 } from "@/lib/admin";
 import { DollarSign, ShoppingCart, Users, TrendingUp, Plus, Trash2, Pencil, Eye, EyeOff } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/admin")({
+export const Route = createFileRoute("/_authenticated/admin/")({
   head: () => ({
     meta: [
       { title: "Admin — axiom/lab" },
