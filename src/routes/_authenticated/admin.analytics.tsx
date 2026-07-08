@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
-import { useAuth, useRoles } from "@/hooks/use-auth";
+import { useAdminAccess } from "@/hooks/use-auth";
 import { fetchAnalytics, toCSV, downloadFile, type Analytics } from "@/lib/orders";
 import { fmtCurrency, t } from "@/lib/i18n";
 import { Download } from "lucide-react";
@@ -12,8 +12,7 @@ export const Route = createFileRoute("/_authenticated/admin/analytics")({
 });
 
 function AdminAnalyticsPage() {
-  const { user } = useAuth();
-  const { isAdmin } = useRoles(user?.id);
+  const { isAdmin, loading: accessLoading } = useAdminAccess();
   const [data, setData] = useState<Analytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [from, setFrom] = useState<string>("");
@@ -30,6 +29,10 @@ function AdminAnalyticsPage() {
   }
 
   useEffect(() => { if (isAdmin) refresh(); }, [isAdmin]);
+
+  if (accessLoading) {
+    return <AdminLoading label="analytics" />;
+  }
 
   if (!isAdmin) {
     return (
@@ -134,6 +137,18 @@ function AdminAnalyticsPage() {
           </>
         )}
       </section>
+      <SiteFooter />
+    </>
+  );
+}
+
+function AdminLoading({ label }: { label: string }) {
+  return (
+    <>
+      <SiteHeader />
+      <div className="mx-auto max-w-2xl px-6 py-24 text-center text-muted-foreground">
+        Checking admin access for {label}…
+      </div>
       <SiteFooter />
     </>
   );

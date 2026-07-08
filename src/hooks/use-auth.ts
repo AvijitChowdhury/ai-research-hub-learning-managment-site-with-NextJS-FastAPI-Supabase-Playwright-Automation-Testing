@@ -59,18 +59,32 @@ export function useProfile(userId: string | null | undefined) {
 
 export function useRoles(userId: string | null | undefined) {
   const [roles, setRoles] = useState<AppRole[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
   useEffect(() => {
     if (!userId) {
       setRoles([]);
+      setLoading(false);
+      setError(null);
       return;
     }
     let cancelled = false;
+    setLoading(true);
+    setError(null);
     supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", userId)
-      .then(({ data }) => {
-        if (!cancelled) setRoles((data ?? []).map((r) => r.role as AppRole));
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) {
+          setRoles([]);
+          setError(error);
+        } else {
+          setRoles((data ?? []).map((r) => r.role as AppRole));
+        }
+        setLoading(false);
       });
     return () => {
       cancelled = true;
@@ -81,5 +95,19 @@ export function useRoles(userId: string | null | undefined) {
     isAdmin: roles.includes("admin"),
     isInstructor: roles.includes("instructor"),
     isStudent: roles.includes("student"),
+    loading,
+    error,
+  };
+}
+
+export function useAdminAccess() {
+  const { user, loading: authLoading } = useAuth();
+  const { roles, isAdmin, loading: rolesLoading, error } = useRoles(user?.id);
+  return {
+    user,
+    roles,
+    isAdmin,
+    error,
+    loading: authLoading || (!!user && rolesLoading),
   };
 }
