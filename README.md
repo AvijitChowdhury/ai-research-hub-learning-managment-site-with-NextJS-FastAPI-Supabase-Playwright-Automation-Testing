@@ -465,6 +465,45 @@ open `reports/index.html` (or `reports/allure-report.html` when using
 `--single-file`). Everything (assets, data, styles) is inlined so no web server
 is required.
 
+#### Per-page screenshots
+
+Alongside the Allure report, every route/feature is captured as a full-page
+screenshot on each run and checked in under [`docs/screenshots/`](./docs/screenshots).
+This gives a visual regression baseline that GitHub can render inline — no
+hosting required.
+
+**Public pages**
+
+| Route | Screenshot |
+| ----- | ---------- |
+| `/` — landing | ![Home](./docs/screenshots/home.png) |
+| `/courses` — catalog | ![Catalog](./docs/screenshots/catalog.png) |
+| `/courses` — search filter | ![Catalog search](./docs/screenshots/catalog-search.png) |
+| `/courses/transformers-from-scratch` | ![Course: Transformers](./docs/screenshots/course-transformers.png) |
+| `/courses/rlhf-and-alignment` | ![Course: RLHF](./docs/screenshots/course-rlhf.png) |
+| `/courses/diffusion-models` | ![Course: Diffusion](./docs/screenshots/course-diffusion.png) |
+| `/courses/ml-systems-engineering` | ![Course: ML Systems](./docs/screenshots/course-ml-systems.png) |
+| `/courses/reading-ai-papers` | ![Course: Reading AI papers](./docs/screenshots/course-reading-papers.png) |
+| `/auth` — sign in | ![Auth sign in](./docs/screenshots/auth-signin.png) |
+| `/auth` — forgot password | ![Auth forgot password](./docs/screenshots/auth-forgot.png) |
+| `/reset-password` | ![Reset password](./docs/screenshots/reset-password.png) |
+| `/checkout/return` | ![Checkout return](./docs/screenshots/checkout-return.png) |
+| `/certificates/{code}` — unknown code | ![Certificate verify](./docs/screenshots/certificate-unknown.png) |
+| Unknown route — 404 | ![Not found](./docs/screenshots/not-found.png) |
+
+**Auth-gated routes (redirect to `/auth` when signed out — captured to prove gating)**
+
+| Route | Screenshot |
+| ----- | ---------- |
+| `/dashboard` | ![Dashboard gate](./docs/screenshots/dashboard-redirect.png) |
+| `/orders` | ![Orders gate](./docs/screenshots/orders-redirect.png) |
+| `/profile` | ![Profile gate](./docs/screenshots/profile-redirect.png) |
+| `/admin` | ![Admin gate](./docs/screenshots/admin-redirect.png) |
+| `/admin/courses/new` | ![Admin course editor gate](./docs/screenshots/admin-courses-redirect.png) |
+| `/admin/orders` | ![Admin orders gate](./docs/screenshots/admin-orders-redirect.png) |
+| `/admin/reviews` | ![Admin reviews gate](./docs/screenshots/admin-reviews-redirect.png) |
+| `/admin/analytics` | ![Admin analytics gate](./docs/screenshots/admin-analytics-redirect.png) |
+| `/admin/instructors` | ![Admin instructors gate](./docs/screenshots/admin-instructors-redirect.png) |
 
 ---
 
