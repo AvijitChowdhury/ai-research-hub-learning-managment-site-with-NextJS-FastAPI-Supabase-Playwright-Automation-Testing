@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
-import { useAuth, useRoles } from "@/hooks/use-auth";
+import { useAdminAccess } from "@/hooks/use-auth";
 import {
   adminFetchCourses,
   createCourse,
@@ -24,9 +24,7 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 });
 
 function AdminPage() {
-  const { user } = useAuth();
-  const { isAdmin, roles } = useRoles(user?.id);
-  const rolesLoaded = !!user; // roles resolve quickly after user
+  const { isAdmin, roles, loading: accessLoading, error: rolesError } = useAdminAccess();
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showNew, setShowNew] = useState(false);
@@ -67,6 +65,10 @@ function AdminPage() {
     }
   }
 
+  if (accessLoading) {
+    return <AdminAccessLoading />;
+  }
+
   if (!isAdmin) {
     return (
       <>
@@ -78,6 +80,9 @@ function AdminPage() {
             Your roles: <span className="font-mono text-foreground">{roles.join(", ") || "—"}</span>. The admin console is
             available to users with the <span className="font-mono">admin</span> role.
           </p>
+          {rolesError && (
+            <p className="mt-3 font-mono text-xs text-destructive">Role check failed: {rolesError.message}</p>
+          )}
           <div className="mt-6 rounded-lg border border-border bg-surface p-5">
             <div className="mono-label mb-2">bootstrap</div>
             <p className="text-sm text-muted-foreground">
@@ -246,6 +251,20 @@ function AdminPage() {
         />
       )}
 
+      <SiteFooter />
+    </>
+  );
+}
+
+function AdminAccessLoading() {
+  return (
+    <>
+      <SiteHeader />
+      <section className="mx-auto max-w-2xl px-6 py-24">
+        <div className="mono-label mb-2">/ admin / gate</div>
+        <h1 className="text-3xl">Checking admin access…</h1>
+        <p className="mt-3 text-sm text-muted-foreground">Loading your account roles.</p>
+      </section>
       <SiteFooter />
     </>
   );

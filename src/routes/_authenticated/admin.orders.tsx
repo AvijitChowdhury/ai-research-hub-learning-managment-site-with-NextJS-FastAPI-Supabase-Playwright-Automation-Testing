@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
-import { useAuth, useRoles } from "@/hooks/use-auth";
+import { useAdminAccess } from "@/hooks/use-auth";
 import { adminFetchOrders, type OrderRow } from "@/lib/orders";
 import { Search, RefreshCw } from "lucide-react";
 
@@ -19,8 +19,7 @@ export const Route = createFileRoute("/_authenticated/admin/orders")({
 type StatusFilter = OrderRow["status"] | "all";
 
 function AdminOrdersPage() {
-  const { user } = useAuth();
-  const { isAdmin } = useRoles(user?.id);
+  const { isAdmin, loading: accessLoading } = useAdminAccess();
   const [rows, setRows] = useState<OrderRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<StatusFilter>("all");
@@ -52,6 +51,10 @@ function AdminOrdersPage() {
       revenue: revenueCents / 100,
     };
   }, [rows]);
+
+  if (accessLoading) {
+    return <AdminLoading />;
+  }
 
   if (!isAdmin) {
     return (
@@ -222,6 +225,18 @@ function AdminOrdersPage() {
         </div>
       </section>
 
+      <SiteFooter />
+    </>
+  );
+}
+
+function AdminLoading() {
+  return (
+    <>
+      <SiteHeader />
+      <section className="mx-auto max-w-2xl px-6 py-24 text-center text-muted-foreground">
+        Checking admin access…
+      </section>
       <SiteFooter />
     </>
   );

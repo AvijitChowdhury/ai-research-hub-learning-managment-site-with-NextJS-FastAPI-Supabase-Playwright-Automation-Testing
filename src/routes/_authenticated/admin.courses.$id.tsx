@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
-import { useAuth, useRoles } from "@/hooks/use-auth";
+import { useAdminAccess } from "@/hooks/use-auth";
 import {
   adminFetchCourseById,
   updateCourse,
@@ -25,8 +25,7 @@ export const Route = createFileRoute("/_authenticated/admin/courses/$id")({
 
 function EditCoursePage() {
   const { id } = Route.useParams();
-  const { user } = useAuth();
-  const { isAdmin } = useRoles(user?.id);
+  const { isAdmin, loading: accessLoading } = useAdminAccess();
   const router = useRouter();
   const [course, setCourse] = useState<any>(null);
   const [modules, setModules] = useState<Module[]>([]);
@@ -44,6 +43,10 @@ function EditCoursePage() {
     setLoading(false);
   }
   useEffect(() => { if (isAdmin) refresh(); }, [id, isAdmin]);
+
+  if (accessLoading) {
+    return <AdminLoading />;
+  }
 
   if (!isAdmin) {
     return (
@@ -202,6 +205,18 @@ function EditCoursePage() {
         </div>
       </section>
 
+      <SiteFooter />
+    </>
+  );
+}
+
+function AdminLoading() {
+  return (
+    <>
+      <SiteHeader />
+      <div className="mx-auto max-w-2xl px-6 py-24 text-center text-muted-foreground">
+        Checking admin access…
+      </div>
       <SiteFooter />
     </>
   );

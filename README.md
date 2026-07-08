@@ -219,7 +219,7 @@ src/
 ├── routes/                       # File-based routes (TanStack Router)
 │   ├── __root.tsx                # HTML shell, providers, head metadata
 │   ├── index.tsx                 # Landing page
-│   ├── courses.tsx               # Catalog
+│   ├── courses.index.tsx         # Catalog
 │   ├── courses.$slug.tsx         # Course detail
 │   ├── auth.tsx                  # Sign in / sign up
 │   ├── checkout.return.tsx       # Post-payment return page
@@ -228,7 +228,7 @@ src/
 │   │   ├── route.tsx             # Session gate (redirects to /auth)
 │   │   ├── dashboard.tsx
 │   │   ├── learn.$slug.$lessonId.tsx
-│   │   ├── admin.tsx
+│   │   ├── admin.index.tsx
 │   │   ├── admin.orders.tsx
 │   │   └── admin.courses.$id.tsx
 │   └── api/public/               # Public HTTP endpoints (webhooks, etc.)
@@ -465,45 +465,46 @@ open `reports/index.html` (or `reports/allure-report.html` when using
 `--single-file`). Everything (assets, data, styles) is inlined so no web server
 is required.
 
-#### Per-page screenshots
+#### Current Playwright screenshots
 
-Alongside the Allure report, every route/feature is captured as a full-page
-screenshot on each run and checked in under [`docs/screenshots/`](./docs/screenshots).
-This gives a visual regression baseline that GitHub can render inline — no
-hosting required.
+The current visual baseline is checked in under
+[`docs/screenshots/e2e/`](./docs/screenshots/e2e). These screenshots show
+real rendered pages, including authenticated student and admin surfaces.
 
 **Public pages**
 
 | Route | Screenshot |
 | ----- | ---------- |
-| `/` — landing | ![Home](./docs/screenshots/home.png) |
-| `/courses` — catalog | ![Catalog](./docs/screenshots/catalog.png) |
-| `/courses` — search filter | ![Catalog search](./docs/screenshots/catalog-search.png) |
-| `/courses/transformers-from-scratch` | ![Course: Transformers](./docs/screenshots/course-transformers.png) |
-| `/courses/rlhf-and-alignment` | ![Course: RLHF](./docs/screenshots/course-rlhf.png) |
-| `/courses/diffusion-models` | ![Course: Diffusion](./docs/screenshots/course-diffusion.png) |
-| `/courses/ml-systems-engineering` | ![Course: ML Systems](./docs/screenshots/course-ml-systems.png) |
-| `/courses/reading-ai-papers` | ![Course: Reading AI papers](./docs/screenshots/course-reading-papers.png) |
-| `/auth` — sign in | ![Auth sign in](./docs/screenshots/auth-signin.png) |
-| `/auth` — forgot password | ![Auth forgot password](./docs/screenshots/auth-forgot.png) |
-| `/reset-password` | ![Reset password](./docs/screenshots/reset-password.png) |
-| `/checkout/return` | ![Checkout return](./docs/screenshots/checkout-return.png) |
-| `/certificates/{code}` — unknown code | ![Certificate verify](./docs/screenshots/certificate-unknown.png) |
-| Unknown route — 404 | ![Not found](./docs/screenshots/not-found.png) |
+| `/` — landing | ![Home](./docs/screenshots/e2e/public-home.png) |
+| `/courses` — catalog | ![Catalog](./docs/screenshots/e2e/public-catalog.png) |
+| `/courses/transformers-from-scratch` | ![Course: Transformers](./docs/screenshots/e2e/public-course-transformers.png) |
+| `/courses/rlhf-and-alignment` | ![Course: RLHF](./docs/screenshots/e2e/public-course-rlhf.png) |
+| `/courses/diffusion-models` | ![Course: Diffusion](./docs/screenshots/e2e/public-course-diffusion.png) |
+| `/auth` — sign in | ![Auth sign in](./docs/screenshots/e2e/public-auth-signin.png) |
+| `/reset-password` | ![Reset password](./docs/screenshots/e2e/public-reset-password.png) |
+| `/certificates/{code}` — unknown code | ![Certificate verify](./docs/screenshots/e2e/public-certificate-unknown.png) |
 
-**Auth-gated routes (redirect to `/auth` when signed out — captured to prove gating)**
+**Authenticated student pages**
 
 | Route | Screenshot |
 | ----- | ---------- |
-| `/dashboard` | ![Dashboard gate](./docs/screenshots/dashboard-redirect.png) |
-| `/orders` | ![Orders gate](./docs/screenshots/orders-redirect.png) |
-| `/profile` | ![Profile gate](./docs/screenshots/profile-redirect.png) |
-| `/admin` | ![Admin gate](./docs/screenshots/admin-redirect.png) |
-| `/admin/courses/new` | ![Admin course editor gate](./docs/screenshots/admin-courses-redirect.png) |
-| `/admin/orders` | ![Admin orders gate](./docs/screenshots/admin-orders-redirect.png) |
-| `/admin/reviews` | ![Admin reviews gate](./docs/screenshots/admin-reviews-redirect.png) |
-| `/admin/analytics` | ![Admin analytics gate](./docs/screenshots/admin-analytics-redirect.png) |
-| `/admin/instructors` | ![Admin instructors gate](./docs/screenshots/admin-instructors-redirect.png) |
+| `/dashboard` | ![Student dashboard](./docs/screenshots/e2e/student-dashboard.png) |
+| `/orders` | ![Student orders](./docs/screenshots/e2e/student-orders.png) |
+| `/profile` | ![Student profile](./docs/screenshots/e2e/student-profile.png) |
+| `/courses/transformers-from-scratch` | ![Student course detail](./docs/screenshots/e2e/student-course-detail.png) |
+
+**Authenticated admin pages**
+
+| Route | Screenshot |
+| ----- | ---------- |
+| `/dashboard` | ![Admin dashboard](./docs/screenshots/e2e/admin-dashboard.png) |
+| `/profile` | ![Admin profile](./docs/screenshots/e2e/admin-profile.png) |
+| `/admin` | ![Admin content management](./docs/screenshots/e2e/admin-admin-home.png) |
+| `/admin/courses/:id` | ![Admin course editor](./docs/screenshots/e2e/admin-course-editor.png) |
+| `/admin/orders` | ![Admin orders](./docs/screenshots/e2e/admin-admin-orders.png) |
+| `/admin/reviews` | ![Admin reviews](./docs/screenshots/e2e/admin-admin-reviews.png) |
+| `/admin/analytics` | ![Admin analytics](./docs/screenshots/e2e/admin-admin-analytics.png) |
+| `/admin/instructors` | ![Admin instructors](./docs/screenshots/e2e/admin-admin-instructors.png) |
 
 ---
 
