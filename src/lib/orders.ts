@@ -23,7 +23,7 @@ export async function adminFetchOrders(filters?: {
   let q = supabase
     .from("orders")
     .select(
-      "id,user_id,course_id,amount_cents,currency,status,provider,provider_invoice_id,provider_transaction_id,created_at,updated_at,courses:course_id(title,slug),profiles:user_id(display_name)"
+      "id,user_id,course_id,amount_cents,currency,status,provider,provider_invoice_id,provider_transaction_id,created_at,updated_at,courses:course_id(title,slug)"
     )
     .order("created_at", { ascending: false })
     .limit(500);
@@ -34,7 +34,19 @@ export async function adminFetchOrders(filters?: {
   const { data, error } = await q;
   if (error) throw error;
 
-  let rows = (data ?? []) as unknown as OrderRow[];
+  let rows = (data ?? []).map((r: any) => ({ ...r, profiles: null })) as unknown as OrderRow[];
+
+  // Fetch display names in a separate query (no FK between orders.user_id and profiles).
+  const userIds = Array.from(new Set(rows.map((r) => r.user_id).filter(Boolean)));
+  if (userIds.length) {
+    const { data: profs } = await supabase
+      .from("profiles")
+      .select("id,display_name")
+      .in("id", userIds);
+    const byId = new Map((profs ?? []).map((p: any) => [p.id, p.display_name as string | null]));
+    rows = rows.map((r) => ({ ...r, profiles: { display_name: byId.get(r.user_id) ?? null } }));
+  }
+
   const s = filters?.search?.trim().toLowerCase();
   if (s) {
     rows = rows.filter((r) =>
