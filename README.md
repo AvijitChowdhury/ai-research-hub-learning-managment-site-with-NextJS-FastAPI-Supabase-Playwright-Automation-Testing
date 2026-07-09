@@ -1,36 +1,60 @@
+<div align="center">
+
 # axiom/lab
 
-> A modern, full-stack learning platform for teaching research, AI, and applied
-> engineering — built with TanStack Start, React 19, TypeScript, Tailwind CSS v4,
-> Supabase (Postgres + Row-Level Security), and a Cloudflare Workers edge runtime.
+**A production-grade learning platform for research, AI, and applied engineering.**
+
+_TanStack Start · React 19 · TypeScript · Tailwind v4 · Supabase · Cloudflare Workers_
+
+[![TanStack Start](https://img.shields.io/badge/TanStack_Start-v1-0284c7?logo=react&logoColor=white)](https://tanstack.com/start)
+[![React 19](https://img.shields.io/badge/React-19-149eca?logo=react&logoColor=white)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38bdf8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Supabase](https://img.shields.io/badge/Supabase-Postgres_+_RLS-3ecf8e?logo=supabase&logoColor=white)](https://supabase.com)
+[![Cloudflare Workers](https://img.shields.io/badge/Runtime-Cloudflare_Workers-f38020?logo=cloudflare&logoColor=white)](https://workers.cloudflare.com)
+[![Tests](https://img.shields.io/badge/e2e_tests-98%2F98_passing-2ea043?logo=playwright&logoColor=white)](#end-to-end-tests-playwright--pytest--allure)
+[![License](https://img.shields.io/badge/license-Proprietary-lightgrey)](#license)
+
+[Overview](#overview) · [Architecture](#architecture) · [Data model](#data-model) · [Testing](#testing--quality) · [Deployment](#deployment)
+
+</div>
+
+---
+
+## Overview
 
 axiom/lab is a production-grade course marketplace and learning management
 system. Students discover courses, purchase them via an integrated
 UddoktaPay checkout, work through structured lessons, earn verifiable
-completion certificates, and leave reviews. Admins manage courses, curriculum,
-orders, and content from a first-class admin console.
+completion certificates, and leave reviews. Admins manage courses,
+curriculum, orders, and content from a first-class admin console.
 
----
+The stack is intentionally edge-native and RLS-first: every page renders on
+Cloudflare Workers, and the browser talks to Postgres directly through
+policies that are the single source of truth for authorization.
 
 ## Table of contents
 
-1. [Feature overview](#feature-overview)
-2. [Tech stack](#tech-stack)
-3. [Architecture](#architecture)
-4. [Data model](#data-model)
-5. [Request lifecycle](#request-lifecycle)
-6. [Project structure](#project-structure)
-7. [Local development](#local-development)
-8. [Environment variables](#environment-variables)
-9. [Database & migrations](#database--migrations)
-10. [Authentication & authorization](#authentication--authorization)
-11. [Payments](#payments)
-12. [Certificates](#certificates)
-13. [Testing & quality](#testing--quality)
-14. [Deployment](#deployment)
-15. [Security model](#security-model)
-16. [Roadmap](#roadmap)
-17. [License](#license)
+1. [Overview](#overview)
+2. [Feature overview](#feature-overview)
+3. [Tech stack](#tech-stack)
+4. [Architecture](#architecture)
+5. [Testing architecture](#testing-architecture)
+6. [Data model](#data-model)
+7. [Request lifecycle](#request-lifecycle)
+8. [Project structure](#project-structure)
+9. [Local development](#local-development)
+10. [Environment variables](#environment-variables)
+11. [Database & migrations](#database--migrations)
+12. [Authentication & authorization](#authentication--authorization)
+13. [Payments](#payments)
+14. [Certificates](#certificates)
+15. [Testing & quality](#testing--quality)
+16. [Deployment](#deployment)
+17. [Security model](#security-model)
+18. [Roadmap](#roadmap)
+19. [Contributing](#contributing)
+20. [License](#license)
 
 ---
 
