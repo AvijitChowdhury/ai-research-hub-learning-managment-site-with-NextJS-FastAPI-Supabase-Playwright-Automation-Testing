@@ -662,6 +662,31 @@ Web-standard APIs, and fetch-based clients.
 
 ---
 
+## Contributing
+
+Contributions are welcome from authorized collaborators.
+
+1. **Branch** — create a topic branch from `main` (`feat/…`, `fix/…`, `chore/…`).
+2. **Develop** — keep changes focused; follow the existing module boundaries
+   (`routes/`, `components/`, `lib/`, `hooks/`, `integrations/`).
+3. **Verify locally** — run the full quality gate:
+   ```bash
+   bun run lint
+   bunx tsgo --noEmit
+   bun run build
+   python -m pytest tests/e2e
+   ```
+4. **Migrations** — every new `public` table MUST include `GRANT` statements,
+   `ENABLE ROW LEVEL SECURITY`, and explicit policies in the same migration.
+5. **PRs** — describe the user-visible change, list affected routes, attach
+   updated screenshots when UI changes, and confirm the E2E suite passes.
+
+Please do not open PRs that disable RLS, weaken webhook signature checks,
+or ship secrets into the client bundle.
+
+---
+
 ## License
 
 Proprietary — all rights reserved. Contact the maintainers for licensing terms.
+
