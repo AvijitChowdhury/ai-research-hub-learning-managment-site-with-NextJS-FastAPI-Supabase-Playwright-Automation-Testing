@@ -1,36 +1,60 @@
+<div align="center">
+
 # axiom/lab
 
-> A modern, full-stack learning platform for teaching research, AI, and applied
-> engineering — built with TanStack Start, React 19, TypeScript, Tailwind CSS v4,
-> Supabase (Postgres + Row-Level Security), and a Cloudflare Workers edge runtime.
+**A production-grade learning platform for research, AI, and applied engineering.**
+
+_TanStack Start · React 19 · TypeScript · Tailwind v4 · Supabase · Cloudflare Workers_
+
+[![TanStack Start](https://img.shields.io/badge/TanStack_Start-v1-0284c7?logo=react&logoColor=white)](https://tanstack.com/start)
+[![React 19](https://img.shields.io/badge/React-19-149eca?logo=react&logoColor=white)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38bdf8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Supabase](https://img.shields.io/badge/Supabase-Postgres_+_RLS-3ecf8e?logo=supabase&logoColor=white)](https://supabase.com)
+[![Cloudflare Workers](https://img.shields.io/badge/Runtime-Cloudflare_Workers-f38020?logo=cloudflare&logoColor=white)](https://workers.cloudflare.com)
+[![Tests](https://img.shields.io/badge/e2e_tests-98%2F98_passing-2ea043?logo=playwright&logoColor=white)](#end-to-end-tests-playwright--pytest--allure)
+[![License](https://img.shields.io/badge/license-Proprietary-lightgrey)](#license)
+
+[Overview](#overview) · [Architecture](#architecture) · [Data model](#data-model) · [Testing](#testing--quality) · [Deployment](#deployment)
+
+</div>
+
+---
+
+## Overview
 
 axiom/lab is a production-grade course marketplace and learning management
 system. Students discover courses, purchase them via an integrated
 UddoktaPay checkout, work through structured lessons, earn verifiable
-completion certificates, and leave reviews. Admins manage courses, curriculum,
-orders, and content from a first-class admin console.
+completion certificates, and leave reviews. Admins manage courses,
+curriculum, orders, and content from a first-class admin console.
 
----
+The stack is intentionally edge-native and RLS-first: every page renders on
+Cloudflare Workers, and the browser talks to Postgres directly through
+policies that are the single source of truth for authorization.
 
 ## Table of contents
 
-1. [Feature overview](#feature-overview)
-2. [Tech stack](#tech-stack)
-3. [Architecture](#architecture)
-4. [Data model](#data-model)
-5. [Request lifecycle](#request-lifecycle)
-6. [Project structure](#project-structure)
-7. [Local development](#local-development)
-8. [Environment variables](#environment-variables)
-9. [Database & migrations](#database--migrations)
-10. [Authentication & authorization](#authentication--authorization)
-11. [Payments](#payments)
-12. [Certificates](#certificates)
-13. [Testing & quality](#testing--quality)
-14. [Deployment](#deployment)
-15. [Security model](#security-model)
-16. [Roadmap](#roadmap)
-17. [License](#license)
+1. [Overview](#overview)
+2. [Feature overview](#feature-overview)
+3. [Tech stack](#tech-stack)
+4. [Architecture](#architecture)
+5. [Testing architecture](#testing-architecture)
+6. [Data model](#data-model)
+7. [Request lifecycle](#request-lifecycle)
+8. [Project structure](#project-structure)
+9. [Local development](#local-development)
+10. [Environment variables](#environment-variables)
+11. [Database & migrations](#database--migrations)
+12. [Authentication & authorization](#authentication--authorization)
+13. [Payments](#payments)
+14. [Certificates](#certificates)
+15. [Testing & quality](#testing--quality)
+16. [Deployment](#deployment)
+17. [Security model](#security-model)
+18. [Roadmap](#roadmap)
+19. [Contributing](#contributing)
+20. [License](#license)
 
 ---
 
@@ -85,81 +109,163 @@ orders, and content from a first-class admin console.
 
 ## Architecture
 
-High-level system diagram:
+End-to-end system architecture — request path, edge runtime layers, and
+managed backends:
 
-```text
-                        ┌──────────────────────────────┐
-                        │         Web Browser          │
-                        │  React 19 + TanStack Router  │
-                        └──────────────┬───────────────┘
-                                       │ HTTPS
-                                       ▼
-                ┌────────────────────────────────────────────┐
-                │        Cloudflare Workers (Edge)           │
-                │                                            │
-                │  ┌──────────────────────────────────────┐  │
-                │  │  TanStack Start SSR                  │  │
-                │  │   • React 19 renderToPipeableStream  │  │
-                │  │   • Route loaders + head() metadata  │  │
-                │  └──────────────────┬───────────────────┘  │
-                │                     │                      │
-                │  ┌──────────────────▼───────────────────┐  │
-                │  │  Server Functions (createServerFn)   │  │
-                │  │   • Typed RPC from client            │  │
-                │  │   • requireSupabaseAuth middleware   │  │
-                │  └──────────────────┬───────────────────┘  │
-                │                     │                      │
-                │  ┌──────────────────▼───────────────────┐  │
-                │  │  Public API Routes (/api/public/*)   │  │
-                │  │   • UddoktaPay webhook (verified)    │  │
-                │  └──────────────────┬───────────────────┘  │
-                └─────────────────────┼──────────────────────┘
-                                      │
-                    ┌─────────────────┼──────────────────┐
-                    ▼                 ▼                  ▼
-        ┌──────────────────┐ ┌────────────────┐ ┌────────────────┐
-        │ Supabase Postgres│ │ Supabase Auth  │ │  UddoktaPay    │
-        │   • RLS policies │ │  • JWT sessions│ │   • Checkout   │
-        │   • Triggers     │ │  • OAuth       │ │   • Webhooks   │
-        │   • has_role()   │ │                │ │                │
-        └──────────────────┘ └────────────────┘ └────────────────┘
+```mermaid
+flowchart TB
+    subgraph Client["🌐 Web Browser"]
+        UI["React 19 UI<br/>TanStack Router · Query<br/>Tailwind v4"]
+    end
+
+    subgraph Edge["⚡ Cloudflare Workers (Edge Runtime)"]
+        direction TB
+        SSR["TanStack Start SSR<br/>renderToPipeableStream<br/>Route loaders · head() meta"]
+        RPC["Server Functions<br/>createServerFn + Zod<br/>requireSupabaseAuth middleware"]
+        API["Public API Routes<br/>/api/public/*<br/>HMAC-verified webhooks"]
+        SSR --> RPC
+        RPC --> API
+    end
+
+    subgraph Data["🗄️ Supabase (Managed)"]
+        PG[("Postgres<br/>RLS policies<br/>Triggers · has_role()")]
+        AUTH["Auth<br/>JWT · Email · OAuth"]
+        STORE["Storage<br/>signed URLs"]
+    end
+
+    subgraph Ext["🔌 External Services"]
+        PAY["UddoktaPay<br/>Checkout + Webhooks"]
+    end
+
+    UI -- "HTTPS · SSR request" --> SSR
+    UI -- "typed RPC · fetch" --> RPC
+    UI -. "publishable key + JWT (RLS-scoped)" .-> PG
+    UI -. "session" .-> AUTH
+    RPC --> PG
+    RPC --> AUTH
+    RPC --> PAY
+    PAY -- "signed webhook" --> API
+    API -- "service role" --> PG
+
+    classDef edge fill:#f38020,stroke:#b35a0f,color:#fff;
+    classDef data fill:#3ecf8e,stroke:#1f7d54,color:#062;
+    classDef ext fill:#eab308,stroke:#a16207,color:#111;
+    classDef ui fill:#149eca,stroke:#0b6a89,color:#fff;
+    class SSR,RPC,API edge;
+    class PG,AUTH,STORE data;
+    class PAY ext;
+    class UI ui;
 ```
 
-Key architectural decisions:
+### Key architectural decisions
 
 - **Edge-first SSR** — every route renders on Cloudflare Workers, keeping
   time-to-first-byte low globally and enabling per-request personalization.
 - **RLS as the security boundary** — the browser talks directly to Postgres
-  through the Supabase publishable key; policies (never application code) are
-  the source of truth for who can read/write what.
-- **Server functions over ad-hoc REST** — `createServerFn` gives typed RPC with
-  Zod validators and middleware, so client and server share a single contract.
-- **Roles in a dedicated table** — `user_roles` + `has_role()` (SECURITY
-  DEFINER) prevents privilege escalation and RLS recursion.
+  through the Supabase publishable key; policies (never application code)
+  are the source of truth for who can read/write what.
+- **Server functions over ad-hoc REST** — `createServerFn` gives typed RPC
+  with Zod validators and middleware, so client and server share a single
+  contract.
+- **Roles in a dedicated table** — `user_roles` + `has_role()`
+  (SECURITY DEFINER) prevents privilege escalation and RLS recursion.
 - **Idempotent database triggers** — cross-cutting effects like "issue a
   certificate when the last lesson is completed" live in Postgres, not in
   application code, so they can't be bypassed by clients.
 
 ---
 
+## Testing architecture
+
+The test pyramid combines fast static checks with a broad Playwright-driven
+end-to-end suite. All layers run in CI on every change; the E2E layer
+publishes an Allure report as its artifact.
+
+```mermaid
+flowchart TB
+    subgraph Pyramid["🧪 Test Pyramid"]
+        direction TB
+        E2E["🌐 <b>End-to-End</b> — Playwright + pytest<br/>98 tests · Chromium · ~54s<br/><i>routing · SEO · a11y · perf · auth · flows</i>"]
+        INT["🔗 <b>Integration</b> — server functions + RLS<br/>createServerFn contracts · policy checks"]
+        STATIC["⚙️ <b>Static</b> — tsgo · ESLint · Prettier · build<br/>strict types · lint rules · Worker bundle"]
+        STATIC --> INT --> E2E
+    end
+
+    subgraph Runner["▶️ Test Runner"]
+        PYTEST["pytest<br/>parallel workers"]
+        PW["Playwright<br/>Chromium headless"]
+        FIX["conftest.py<br/>fixtures · seed users<br/>admin + student sessions"]
+        PYTEST --> PW
+        PYTEST --> FIX
+    end
+
+    subgraph SUT["🎯 System Under Test"]
+        DEV["localhost:8080<br/>bun run dev (SSR)"]
+        SUPA[("Supabase<br/>Postgres + Auth")]
+        DEV --> SUPA
+    end
+
+    subgraph Report["📊 Reporting"]
+        ALLURE["Allure<br/>epics · features · stories"]
+        SHOTS["Screenshots<br/>docs/screenshots/e2e/"]
+        HTML["Single-file HTML report<br/>reports/index.html"]
+        ALLURE --> HTML
+    end
+
+    E2E --> PYTEST
+    PW -- "HTTP · DOM · console" --> DEV
+    FIX -- "auth · seed data" --> SUPA
+    PW -- "screenshots + traces" --> SHOTS
+    PYTEST -- "results.json" --> ALLURE
+
+    classDef test fill:#2ea043,stroke:#1a6b2b,color:#fff;
+    classDef run fill:#8b5cf6,stroke:#5b21b6,color:#fff;
+    classDef sut fill:#149eca,stroke:#0b6a89,color:#fff;
+    classDef rep fill:#eab308,stroke:#a16207,color:#111;
+    class E2E,INT,STATIC test;
+    class PYTEST,PW,FIX run;
+    class DEV,SUPA sut;
+    class ALLURE,SHOTS,HTML rep;
+```
+
+**Coverage matrix at a glance**
+
+| Layer | Tool | What it catches |
+| ----- | ---- | --------------- |
+| Types | `tsgo --noEmit` | contract drift between client, server functions, and DB types |
+| Lint | ESLint (TanStack + React 19 rules) | hook misuse, unsafe patterns, unused code |
+| Build | `bun run build` | Worker-incompatible imports, bundle errors, SSR regressions |
+| E2E   | Playwright + pytest | routing, SEO/meta, JSON-LD, a11y, perf budgets, auth flows |
+| Visual | Screenshot baselines | rendered page regressions (checked into `docs/screenshots/e2e/`) |
+| Report | Allure single-file HTML | grouped by epic/feature/story, timeline, severity |
+
+---
+
+
+
 ## Data model
 
-```text
-profiles ─────────┐
-                  │
-auth.users ───────┼──────< user_roles >────── app_role (enum)
-                  │
-                  ├──────< enrollments >──────┐
-                  │                            │
-                  ├──────< lesson_progress >──┼──── lessons ──── modules ──── courses
-                  │                            │
-                  ├──────< orders >───────────┘         │
-                  │                                     │
-                  └──────< certificates >───────────────┘
-                             (auto-issued)
-                                                        │
-                                            reviews ────┘
+```mermaid
+erDiagram
+    auth_users ||--|| profiles : "1:1"
+    auth_users ||--o{ user_roles : "grants"
+    auth_users ||--o{ enrollments : "owns"
+    auth_users ||--o{ orders : "places"
+    auth_users ||--o{ lesson_progress : "tracks"
+    auth_users ||--o{ certificates : "earns"
+    auth_users ||--o{ reviews : "writes"
+
+    courses ||--o{ modules : "contains"
+    modules ||--o{ lessons : "contains"
+    courses ||--o{ enrollments : "sold via"
+    courses ||--o{ orders : "purchased"
+    courses ||--o{ certificates : "certifies"
+    courses ||--o{ reviews : "reviewed"
+    lessons ||--o{ lesson_progress : "completed as"
+
+    user_roles }o--|| app_role : "role enum"
 ```
+
 
 Core tables:
 
@@ -556,6 +662,31 @@ Web-standard APIs, and fetch-based clients.
 
 ---
 
+## Contributing
+
+Contributions are welcome from authorized collaborators.
+
+1. **Branch** — create a topic branch from `main` (`feat/…`, `fix/…`, `chore/…`).
+2. **Develop** — keep changes focused; follow the existing module boundaries
+   (`routes/`, `components/`, `lib/`, `hooks/`, `integrations/`).
+3. **Verify locally** — run the full quality gate:
+   ```bash
+   bun run lint
+   bunx tsgo --noEmit
+   bun run build
+   python -m pytest tests/e2e
+   ```
+4. **Migrations** — every new `public` table MUST include `GRANT` statements,
+   `ENABLE ROW LEVEL SECURITY`, and explicit policies in the same migration.
+5. **PRs** — describe the user-visible change, list affected routes, attach
+   updated screenshots when UI changes, and confirm the E2E suite passes.
+
+Please do not open PRs that disable RLS, weaken webhook signature checks,
+or ship secrets into the client bundle.
+
+---
+
 ## License
 
 Proprietary — all rights reserved. Contact the maintainers for licensing terms.
+
