@@ -245,22 +245,27 @@ flowchart TB
 
 ## Data model
 
-```text
-profiles ─────────┐
-                  │
-auth.users ───────┼──────< user_roles >────── app_role (enum)
-                  │
-                  ├──────< enrollments >──────┐
-                  │                            │
-                  ├──────< lesson_progress >──┼──── lessons ──── modules ──── courses
-                  │                            │
-                  ├──────< orders >───────────┘         │
-                  │                                     │
-                  └──────< certificates >───────────────┘
-                             (auto-issued)
-                                                        │
-                                            reviews ────┘
+```mermaid
+erDiagram
+    auth_users ||--|| profiles : "1:1"
+    auth_users ||--o{ user_roles : "grants"
+    auth_users ||--o{ enrollments : "owns"
+    auth_users ||--o{ orders : "places"
+    auth_users ||--o{ lesson_progress : "tracks"
+    auth_users ||--o{ certificates : "earns"
+    auth_users ||--o{ reviews : "writes"
+
+    courses ||--o{ modules : "contains"
+    modules ||--o{ lessons : "contains"
+    courses ||--o{ enrollments : "sold via"
+    courses ||--o{ orders : "purchased"
+    courses ||--o{ certificates : "certifies"
+    courses ||--o{ reviews : "reviewed"
+    lessons ||--o{ lesson_progress : "completed as"
+
+    user_roles }o--|| app_role : "role enum"
 ```
+
 
 Core tables:
 
